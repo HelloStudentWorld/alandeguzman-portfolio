@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OBD Fault-Code Triage Tool</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230f766e'/%3E%3Cpath d='M18 20h28v24H18zM24 28h16M24 36h10' stroke='white' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>OBD Fault-Code Triage Tool</h1>
+        <p>Portfolio demo for telematics, diagnostics, fleet maintenance, warranty, and remote support teams.</p>
+      </div>
+      <div class="topbar-actions">
+        <button id="loadEvCase" class="secondary">EV Isolation Case</button>
+        <button id="loadEmissionsCase" class="secondary">Emissions Case</button>
+        <button id="loadNetworkCase" class="secondary">Network Case</button>
+        <button id="resetForm">Reset</button>
+      </div>
+    </header>
+
+    <main class="triage-shell">
+      <aside class="input-panel" aria-label="OBD triage input">
+        <section class="panel-header">
+          <h2>Fault Intake</h2>
+          <p>A DTC is a clue, not a conclusion. Enter the code set and context before deciding next steps.</p>
+        </section>
+
+        <form id="triageForm">
+          <label>
+            Vehicle / Asset
+            <input id="vehicle" type="text" value="2018 MINI Cooper SE" autocomplete="off">
+          </label>
+
+          <label>
+            DTCs
+            <input id="dtcs" type="text" value="P0AA6, P0A0A" autocomplete="off">
+          </label>
+
+          <label>
+            Symptom / Complaint
+            <textarea id="symptom" rows="4">Reduced power warning after overnight charging. Warning clears after key cycle but returns intermittently.</textarea>
+          </label>
+
+          <label>
+            Scan Observations
+            <textarea id="observations" rows="4">High-voltage interlock status intermittent. Insulation value varies after overnight charge. 12V battery passes basic test.</textarea>
+          </label>
+
+          <div class="field-grid">
+            <label>
+              Use Case
+              <select id="useCase">
+                <option selected>Dealer service</option>
+                <option>Fleet maintenance</option>
+                <option>Remote support</option>
+                <option>Warranty review</option>
+              </select>
+            </label>
+
+            <label>
+              Asset Status
+              <select id="assetStatus">
+                <option selected>Vehicle available</option>
+                <option>Vehicle down</option>
+                <option>Intermittent / customer driving</option>
+                <option>Remote data only</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Operating Conditions
+            <textarea id="conditions" rows="3">Cold start after overnight charging. Concern is not present every drive cycle.</textarea>
+          </label>
+
+          <button class="primary" type="submit">Run Fault-Code Triage</button>
+        </form>
+      </aside>
+
+      <section class="workspace" aria-label="Fault triage output">
+        <nav class="tabs" aria-label="Output tabs">
+          <button class="tab active" data-tab="triage">Triage</button>
+          <button class="tab" data-tab="questions">Questions</button>
+          <button class="tab" data-tab="handoff">Handoff</button>
+        </nav>
+
+        <section id="triage" class="tab-panel active">
+          <div class="result-header">
+            <div>
+              <h2>Structured Triage</h2>
+              <p id="caseSummary">Initial triage for 2018 MINI Cooper SE.</p>
+            </div>
+            <span id="severityPill" class="risk high">High</span>
+          </div>
+
+          <div class="result-grid">
+            <article>
+              <h3>Likely Affected Systems</h3>
+              <ul id="systems"></ul>
+            </article>
+            <article>
+              <h3>Red Flags</h3>
+              <ul id="redFlags"></ul>
+            </article>
+            <article>
+              <h3>Suggested Next Tests</h3>
+              <ol id="nextTests"></ol>
+            </article>
+            <article>
+              <h3>Do Not Assume</h3>
+              <ul id="doNotAssume"></ul>
+            </article>
+          </div>
+        </section>
+
+        <section id="questions" class="tab-panel">
+          <div class="questions-layout">
+            <article>
+              <h2>Questions Before Dispatch</h2>
+              <ul id="dispatchQuestions"></ul>
+            </article>
+            <article>
+              <h3>Data To Capture</h3>
+              <ul id="dataToCapture"></ul>
+            </article>
+            <article>
+              <h3>Escalation Logic</h3>
+              <p id="escalationLogic"></p>
+            </article>
+            <article>
+              <h3>Buyer-Friendly Explanation</h3>
+              <p id="buyerExplanation"></p>
+            </article>
+          </div>
+        </section>
+
+        <section id="handoff" class="tab-panel">
+          <div class="handoff-card">
+            <h2>Support / Technician Handoff</h2>
+            <p id="handoffSummary"></p>
+          </div>
+          <div class="result-grid">
+            <article>
+              <h3>Fleet Manager Note</h3>
+              <p id="fleetNote"></p>
+            </article>
+            <article>
+              <h3>Advisor Note</h3>
+              <p id="advisorNote"></p>
+            </article>
+            <article>
+              <h3>Product Feedback Signal</h3>
+              <p id="productSignal"></p>
+            </article>
+            <article>
+              <h3>Sales Demo Angle</h3>
+              <p id="salesAngle"></p>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <aside class="sales-panel" aria-label="Sales engineer value">
+        <section>
+          <h2>Sales Engineer Talk Track</h2>
+          <p>This demo shows why fault data needs workflow context before it becomes a repair, dispatch, warranty, or uptime decision.</p>
+        </section>
+
+        <section class="metric-list">
+          <h3>Buyer Value</h3>
+          <div>
+            <strong>Fleet</strong>
+            <span>Prioritize downtime and safety risk.</span>
+          </div>
+          <div>
+            <strong>Telematics</strong>
+            <span>Turn fault data into action logic.</span>
+          </div>
+          <div>
+            <strong>Support</strong>
+            <span>Ask better questions before escalation.</span>
+          </div>
+          <div>
+            <strong>Warranty</strong>
+            <span>Separate evidence from assumptions.</span>
+          </div>
+        </section>
+
+        <section>
+          <h3>Discovery Questions</h3>
+          <ul class="compact-list">
+            <li>What happens after a fault appears?</li>
+            <li>Who decides whether the vehicle keeps operating?</li>
+            <li>Which data is trusted by technicians?</li>
+            <li>Where do false positives create work?</li>
+          </ul>
+        </section>
+
+        <section class="demo-note">
+          <h3>Demo Boundary</h3>
+          <p>This is workflow triage only. OEM procedures, technician validation, and safety requirements control final repair decisions.</p>
+        </section>
+      </aside>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

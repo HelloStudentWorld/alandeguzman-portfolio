@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Service Advisor Estimate Generator</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230f766e'/%3E%3Cpath d='M18 22h28M18 32h28M18 42h18' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Service Advisor Estimate Generator</h1>
+        <p>Portfolio demo for fixed ops, dealer SaaS, shop workflow, warranty, and customer success teams.</p>
+      </div>
+      <div class="topbar-actions">
+        <button id="loadBrakeCase" class="secondary">Brake Case</button>
+        <button id="loadEvCase" class="secondary">EV Safety Case</button>
+        <button id="resetForm">Reset</button>
+      </div>
+    </header>
+
+    <main class="advisor-shell">
+      <aside class="input-panel" aria-label="Advisor input">
+        <section class="panel-header">
+          <h2>Technician Finding</h2>
+          <p>Convert accurate shop notes into language a customer can act on.</p>
+        </section>
+
+        <form id="advisorForm">
+          <label>
+            Vehicle
+            <input id="vehicle" name="vehicle" type="text" value="2019 BMW X3" autocomplete="off">
+          </label>
+
+          <label>
+            Customer Concern
+            <textarea id="concern" name="concern" rows="3">Customer reports vibration while braking from highway speeds.</textarea>
+          </label>
+
+          <label>
+            Technician Finding
+            <textarea id="finding" name="finding" rows="5">Front brake rotors measure below refinish spec and show heat spots. Front pads are near minimum thickness. No hydraulic leak found.</textarea>
+          </label>
+
+          <label>
+            Recommended Repair
+            <textarea id="repair" name="repair" rows="3">Replace front brake pads and rotors, clean/lubricate caliper slide surfaces, and road test.</textarea>
+          </label>
+
+          <div class="field-grid">
+            <label>
+              Urgency
+              <select id="urgency" name="urgency">
+                <option>Safety critical</option>
+                <option selected>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+              </select>
+            </label>
+
+            <label>
+              Customer Type
+              <select id="customerType" name="customerType">
+                <option selected>Retail customer</option>
+                <option>Fleet manager</option>
+                <option>Warranty adjuster</option>
+                <option>Internal service manager</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="field-grid estimate-assumptions">
+            <label>
+              Parts Assumption
+              <input id="parts" name="parts" type="text" value="Front pads, front rotors, hardware kit" autocomplete="off">
+            </label>
+
+            <label>
+              Labor Assumption
+              <input id="labor" name="labor" type="text" value="Brake replacement and road test" autocomplete="off">
+            </label>
+          </div>
+
+          <label>
+            Unknowns / Assumptions
+            <textarea id="unknowns" name="unknowns" rows="3">Final price depends on parts availability, rotor specification, and any caliper issue found during repair.</textarea>
+          </label>
+
+          <button class="primary" type="submit">Generate Advisor Summary</button>
+        </form>
+      </aside>
+
+      <section class="workspace" aria-label="Generated advisor output">
+        <nav class="tabs" aria-label="Output tabs">
+          <button class="tab active" data-tab="customer">Customer Summary</button>
+          <button class="tab" data-tab="estimate">Estimate Notes</button>
+          <button class="tab" data-tab="objections">Objections</button>
+        </nav>
+
+        <section id="customer" class="tab-panel active">
+          <div class="result-header">
+            <div>
+              <h2>Customer-Safe Explanation</h2>
+              <p id="caseSummary">Advisor-ready summary for 2019 BMW X3.</p>
+            </div>
+            <span id="urgencyPill" class="risk high">High</span>
+          </div>
+
+          <div class="customer-card">
+            <h3>Recommended Explanation</h3>
+            <p id="customerExplanation"></p>
+          </div>
+
+          <div class="result-grid">
+            <article>
+              <h3>Why It Matters</h3>
+              <ul id="whyItMatters"></ul>
+            </article>
+            <article>
+              <h3>Recommended Next Step</h3>
+              <p id="nextStep"></p>
+            </article>
+            <article>
+              <h3>Customer Call Script</h3>
+              <p id="callScript"></p>
+            </article>
+            <article>
+              <h3>Do Not Say</h3>
+              <ul id="doNotSay"></ul>
+            </article>
+          </div>
+        </section>
+
+        <section id="estimate" class="tab-panel">
+          <div class="estimate-layout">
+            <article>
+              <h2>Estimate Summary</h2>
+              <dl class="estimate-list">
+                <div>
+                  <dt>Parts assumption</dt>
+                  <dd id="partsAssumption"></dd>
+                </div>
+                <div>
+                  <dt>Labor assumption</dt>
+                  <dd id="laborAssumption"></dd>
+                </div>
+                <div>
+                  <dt>Assumptions to confirm</dt>
+                  <dd id="unknownAssumption"></dd>
+                </div>
+              </dl>
+            </article>
+            <article>
+              <h3>Advisor Documentation</h3>
+              <p id="advisorDocumentation"></p>
+            </article>
+            <article>
+              <h3>Approval Framing</h3>
+              <p id="approvalFraming"></p>
+            </article>
+            <article>
+              <h3>Follow-Up Note</h3>
+              <p id="followUpNote"></p>
+            </article>
+          </div>
+        </section>
+
+        <section id="objections" class="tab-panel">
+          <div class="objection-grid">
+            <article>
+              <h2>Objection Handling</h2>
+              <p id="objectionIntro"></p>
+            </article>
+            <article>
+              <h3>"Can I wait?"</h3>
+              <p id="waitResponse"></p>
+            </article>
+            <article>
+              <h3>"Why does it cost that much?"</h3>
+              <p id="costResponse"></p>
+            </article>
+            <article>
+              <h3>"Can you just clear the warning?"</h3>
+              <p id="clearResponse"></p>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <aside class="sales-panel" aria-label="Sales engineer value">
+        <section>
+          <h2>Sales Engineer Talk Track</h2>
+          <p>This demo shows how service software can turn technician notes into clear authorization language without exaggerating the repair.</p>
+        </section>
+
+        <section class="metric-list">
+          <h3>Buyer Value</h3>
+          <div>
+            <strong>Advisor</strong>
+            <span>Clearer customer conversations.</span>
+          </div>
+          <div>
+            <strong>Service manager</strong>
+            <span>More consistent documentation.</span>
+          </div>
+          <div>
+            <strong>Customer success</strong>
+            <span>Better onboarding examples.</span>
+          </div>
+          <div>
+            <strong>Product team</strong>
+            <span>Workflow requirements from real service context.</span>
+          </div>
+        </section>
+
+        <section>
+          <h3>Discovery Questions</h3>
+          <ul class="compact-list">
+            <li>Where do advisor explanations vary today?</li>
+            <li>How are assumptions separated from confirmed findings?</li>
+            <li>What causes customers to decline needed work?</li>
+            <li>How does the shop document approval language?</li>
+          </ul>
+        </section>
+
+        <section class="demo-note">
+          <h3>Demo Boundary</h3>
+          <p>This is not a pricing engine. Parts, labor, safety decisions, and final estimates must be confirmed by the service team.</p>
+        </section>
+      </aside>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

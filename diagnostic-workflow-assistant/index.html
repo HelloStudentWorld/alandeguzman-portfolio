@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Diagnostic Workflow Assistant</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230f766e'/%3E%3Cpath d='M18 33h28M32 19v28' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Diagnostic Workflow Assistant</h1>
+        <p>Portfolio demo for automotive SaaS, fleet, telematics, diagnostics, and EV service teams.</p>
+      </div>
+      <div class="topbar-actions">
+        <button id="loadMiniCase" class="secondary">MINI EV Case</button>
+        <button id="loadHondaCase" class="secondary">Honda Emissions Case</button>
+        <button id="resetForm">Reset</button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <aside class="input-panel" aria-label="Diagnostic input">
+        <section class="panel-header">
+          <h2>Case Intake</h2>
+          <p>Enter symptoms, vehicle context, DTCs, and observations.</p>
+        </section>
+
+        <form id="diagnosticForm">
+          <label>
+            Vehicle
+            <input id="vehicle" name="vehicle" type="text" value="2018 MINI Cooper SE" autocomplete="off">
+          </label>
+
+          <label>
+            Customer Complaint
+            <textarea id="complaint" name="complaint" rows="4">Intermittent reduced power warning after charging. Customer reports the warning appears most often during the first drive of the day.</textarea>
+          </label>
+
+          <label>
+            DTCs
+            <input id="dtcs" name="dtcs" type="text" value="P0A0A, P0AA6" autocomplete="off">
+          </label>
+
+          <label>
+            Scan Observations
+            <textarea id="observations" name="observations" rows="5">High-voltage interlock status intermittent. Insulation value varies after overnight charge. No visible coolant contamination. 12V battery passes basic test.</textarea>
+          </label>
+
+          <label>
+            Operating Conditions
+            <textarea id="conditions" name="conditions" rows="3">Cold start after overnight charge. Warning clears after key cycle but returns intermittently.</textarea>
+          </label>
+
+          <div class="field-grid">
+            <label>
+              Environment
+              <select id="environment" name="environment">
+                <option>Dealer service</option>
+                <option>Fleet maintenance</option>
+                <option>Remote support</option>
+                <option>Mobile service</option>
+              </select>
+            </label>
+
+            <label>
+              Urgency
+              <select id="urgency" name="urgency">
+                <option>Safety critical</option>
+                <option selected>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+              </select>
+            </label>
+          </div>
+
+          <button class="primary" type="submit">Run Diagnostic Workflow</button>
+        </form>
+      </aside>
+
+      <section class="workspace" aria-label="Workflow results">
+        <nav class="tabs" aria-label="Output tabs">
+          <button class="tab active" data-tab="diagnostic">Diagnostic Path</button>
+          <button class="tab" data-tab="advisor">Advisor Explanation</button>
+          <button class="tab" data-tab="obd">OBD Triage</button>
+        </nav>
+
+        <section id="diagnostic" class="tab-panel active">
+          <div class="result-header">
+            <div>
+              <h2>Generated Workflow</h2>
+              <p id="caseSummary">Structured triage for 2018 MINI Cooper SE.</p>
+            </div>
+            <span id="riskPill" class="risk high">High</span>
+          </div>
+
+          <div class="result-grid">
+            <article>
+              <h3>Likely Diagnostic Paths</h3>
+              <ol id="diagnosticPaths"></ol>
+            </article>
+            <article>
+              <h3>Safety Checks</h3>
+              <ul id="safetyChecks"></ul>
+            </article>
+            <article>
+              <h3>Next Test Steps</h3>
+              <ol id="testSteps"></ol>
+            </article>
+            <article>
+              <h3>Technician Notes</h3>
+              <ul id="technicianNotes"></ul>
+            </article>
+          </div>
+        </section>
+
+        <section id="advisor" class="tab-panel">
+          <div class="advisor-layout">
+            <article>
+              <h2>Service-Advisor Explanation</h2>
+              <p id="advisorExplanation"></p>
+            </article>
+            <article>
+              <h3>Customer-Safe Next Step</h3>
+              <p id="customerNextStep"></p>
+            </article>
+            <article>
+              <h3>Assumptions To Confirm</h3>
+              <ul id="assumptions"></ul>
+            </article>
+            <article>
+              <h3>Objection Handling</h3>
+              <p id="objectionHandling"></p>
+            </article>
+          </div>
+        </section>
+
+        <section id="obd" class="tab-panel">
+          <div class="obd-grid">
+            <article>
+              <h2>Fault-Code Triage</h2>
+              <p id="obdSummary"></p>
+            </article>
+            <article>
+              <h3>Systems To Check</h3>
+              <ul id="systemsToCheck"></ul>
+            </article>
+            <article>
+              <h3>Questions Before Escalation</h3>
+              <ul id="triageQuestions"></ul>
+            </article>
+            <article>
+              <h3>Do Not Assume</h3>
+              <ul id="doNotAssume"></ul>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <aside class="sales-panel" aria-label="Sales engineer value">
+        <section>
+          <h2>Sales Engineer Talk Track</h2>
+          <p>This workflow reduces intake ambiguity, improves note quality, and helps technical and non-technical stakeholders agree on the next step.</p>
+        </section>
+
+        <section class="metric-list">
+          <h3>Buyer Value</h3>
+          <div>
+            <strong>Fleet manager</strong>
+            <span>Prioritize downtime and safety risks.</span>
+          </div>
+          <div>
+            <strong>Technician</strong>
+            <span>Start with clearer context and test logic.</span>
+          </div>
+          <div>
+            <strong>Advisor</strong>
+            <span>Explain findings without overpromising.</span>
+          </div>
+          <div>
+            <strong>Support team</strong>
+            <span>Escalate with cleaner notes and assumptions.</span>
+          </div>
+        </section>
+
+        <section>
+          <h3>Discovery Questions</h3>
+          <ul class="compact-list">
+            <li>Where does diagnostic context get lost today?</li>
+            <li>How do DTCs become work orders?</li>
+            <li>What does one day of downtime cost?</li>
+            <li>Who needs the output to trust the next step?</li>
+          </ul>
+        </section>
+
+        <section class="demo-note">
+          <h3>Demo Boundary</h3>
+          <p>Outputs are workflow support only. A qualified technician must validate safety, test results, repair decisions, and final recommendations.</p>
+        </section>
+      </aside>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

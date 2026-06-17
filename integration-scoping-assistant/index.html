@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Integration Scoping Assistant</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230f766e'/%3E%3Cpath d='M18 22h13v8H18zm15 12h13v8H33zM25 30v4h14' fill='none' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Integration Scoping Assistant</h1>
+        <p>Portfolio demo for Sales Engineer API discovery, proof-of-value planning, and implementation handoffs.</p>
+      </div>
+      <div class="topbar-actions">
+        <button id="loadFleetCase" class="secondary" type="button">Fleet Maintenance Case</button>
+        <button id="loadDeliveryCase" class="secondary" type="button">Delivery Dispatch Case</button>
+        <button id="resetForm" type="button">Reset</button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <aside class="input-panel" aria-label="Integration scoping input">
+        <section class="panel-header">
+          <h2>Scoping Intake</h2>
+          <p>Capture the buyer workflow, systems, data objects, auth model, cadence, and success criteria.</p>
+        </section>
+
+        <form id="scopeForm">
+          <label>
+            Customer Workflow
+            <textarea id="workflow" name="workflow" rows="4">Fleet wants maintenance exceptions from its telematics platform to create prioritized delivery operations alerts before vehicles miss route commitments.</textarea>
+          </label>
+
+          <div class="field-grid">
+            <label>
+              Source System
+              <input id="sourceSystem" name="sourceSystem" type="text" value="Fleet maintenance platform" autocomplete="off">
+            </label>
+            <label>
+              Target System
+              <input id="targetSystem" name="targetSystem" type="text" value="Delivery dispatch system" autocomplete="off">
+            </label>
+          </div>
+
+          <label>
+            Objects / Data Needed
+            <textarea id="objects" name="objects" rows="4">Vehicle ID, asset status, DTC severity, open work order, route assignment, estimated downtime, technician note, last update timestamp.</textarea>
+          </label>
+
+          <div class="field-grid">
+            <label>
+              Auth Model
+              <select id="authModel" name="authModel">
+                <option>OAuth 2.0</option>
+                <option selected>API key</option>
+                <option>Service account</option>
+                <option>Unknown</option>
+              </select>
+            </label>
+            <label>
+              Data Cadence
+              <select id="cadence" name="cadence">
+                <option>Real-time webhook</option>
+                <option selected>15-minute sync</option>
+                <option>Hourly batch</option>
+                <option>Daily report</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Proof-of-Value Success Criteria
+            <textarea id="successCriteria" name="successCriteria" rows="4">Reduce missed route commitments caused by maintenance surprises, cut manual dispatcher checks, and prove alerts are trusted by fleet managers and dispatch leads.</textarea>
+          </label>
+
+          <div class="field-grid">
+            <label>
+              Buyer Type
+              <select id="buyerType" name="buyerType">
+                <option selected>Fleet operations</option>
+                <option>Public sector fleet</option>
+                <option>Industrial delivery</option>
+                <option>Dealer fixed ops</option>
+              </select>
+            </label>
+            <label>
+              Risk Level
+              <select id="riskLevel" name="riskLevel">
+                <option>Low</option>
+                <option selected>Medium</option>
+                <option>High</option>
+                <option>Safety critical</option>
+              </select>
+            </label>
+          </div>
+
+          <button class="primary" type="submit">Generate Scoping Plan</button>
+        </form>
+      </aside>
+
+      <section class="workspace" aria-label="Integration scoping results">
+        <nav class="tabs" aria-label="Output tabs">
+          <button class="tab active" data-tab="discovery" type="button">Discovery</button>
+          <button class="tab" data-tab="plan" type="button">Integration Plan</button>
+          <button class="tab" data-tab="pov" type="button">PoV Metrics</button>
+          <button class="tab" data-tab="risks" type="button">Risks</button>
+        </nav>
+
+        <section id="discovery" class="tab-panel active">
+          <div class="result-header">
+            <div>
+              <h2>Discovery Brief</h2>
+              <p id="scopeSummary">Integration scoping for Fleet maintenance platform to Delivery dispatch system.</p>
+            </div>
+            <span id="riskPill" class="risk medium">Medium</span>
+          </div>
+
+          <div class="result-grid">
+            <article>
+              <h3>Discovery Questions</h3>
+              <ul id="discoveryQuestions"></ul>
+            </article>
+            <article>
+              <h3>Systems To Validate</h3>
+              <ul id="systemsToValidate"></ul>
+            </article>
+            <article>
+              <h3>Data Clarifications</h3>
+              <ul id="dataClarifications"></ul>
+            </article>
+            <article>
+              <h3>Stakeholders</h3>
+              <ul id="stakeholders"></ul>
+            </article>
+          </div>
+        </section>
+
+        <section id="plan" class="tab-panel">
+          <div class="result-grid">
+            <article>
+              <h2>Integration Pattern</h2>
+              <p id="integrationPattern"></p>
+            </article>
+            <article>
+              <h3>Technical Assumptions</h3>
+              <ul id="technicalAssumptions"></ul>
+            </article>
+            <article>
+              <h3>Implementation Handoff</h3>
+              <ol id="handoffSteps"></ol>
+            </article>
+            <article>
+              <h3>Demo Flow</h3>
+              <ol id="demoFlow"></ol>
+            </article>
+          </div>
+        </section>
+
+        <section id="pov" class="tab-panel">
+          <div class="scoreboard">
+            <div>
+              <span>PoV Window</span>
+              <strong id="povWindow">30 days</strong>
+            </div>
+            <div>
+              <span>Primary Metric</span>
+              <strong id="primaryMetric">Route risk reduction</strong>
+            </div>
+            <div>
+              <span>Buyer Proof</span>
+              <strong id="buyerProof">Trusted alerts</strong>
+            </div>
+          </div>
+          <div class="result-grid">
+            <article>
+              <h3>Success Metrics</h3>
+              <ul id="successMetrics"></ul>
+            </article>
+            <article>
+              <h3>Baseline Needed</h3>
+              <ul id="baselineNeeded"></ul>
+            </article>
+            <article>
+              <h3>Outcome Story</h3>
+              <p id="outcomeStory"></p>
+            </article>
+            <article>
+              <h3>Close Plan</h3>
+              <ol id="closePlan"></ol>
+            </article>
+          </div>
+        </section>
+
+        <section id="risks" class="tab-panel">
+          <div class="result-grid">
+            <article>
+              <h2>Risk Register</h2>
+              <ul id="riskRegister"></ul>
+            </article>
+            <article>
+              <h3>Security / Compliance Checks</h3>
+              <ul id="securityChecks"></ul>
+            </article>
+            <article>
+              <h3>Do Not Claim</h3>
+              <ul id="doNotClaim"></ul>
+            </article>
+            <article>
+              <h3>Escalation Path</h3>
+              <p id="escalationPath"></p>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <aside class="sales-panel" aria-label="Sales engineer talk track">
+        <section>
+          <h2>Sales Engineer Talk Track</h2>
+          <p id="talkTrack">This workflow turns a vague integration request into discovery questions, assumptions, a PoV plan, and an implementation handoff.</p>
+        </section>
+
+        <section class="metric-list">
+          <h3>Buyer Value</h3>
+          <div>
+            <strong>Fleet leader</strong>
+            <span>Connect maintenance signals to uptime and route impact.</span>
+          </div>
+          <div>
+            <strong>IT / integration owner</strong>
+            <span>Clarify auth, cadence, objects, and handoff needs.</span>
+          </div>
+          <div>
+            <strong>Operations manager</strong>
+            <span>Define PoV metrics that match daily work.</span>
+          </div>
+          <div>
+            <strong>Implementation team</strong>
+            <span>Receive assumptions and open questions early.</span>
+          </div>
+        </section>
+
+        <section>
+          <h3>Role Fit</h3>
+          <ul class="compact-list">
+            <li>Samsara partner/FMC SE roles</li>
+            <li>Curri first Solutions Engineer role</li>
+            <li>Geotab pre-sales solutions roles</li>
+            <li>Automotive SaaS implementation handoffs</li>
+          </ul>
+        </section>
+
+        <section class="demo-note">
+          <h3>Demo Boundary</h3>
+          <p>This is a scoping and communication demo. It does not call external APIs, store credentials, or claim production integration ownership.</p>
+        </section>
+      </aside>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
