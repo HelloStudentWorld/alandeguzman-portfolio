@@ -34,6 +34,8 @@ const samples = {
   }
 };
 
+let currentExecutiveBrief = "";
+
 function $(id) {
   return document.getElementById(id);
 }
@@ -149,6 +151,51 @@ function renderList(id, items) {
   });
 }
 
+function buildExecutiveBrief(input, output) {
+  const vehicle = input.vehicle || "the selected vehicle";
+  return {
+    summary: `${vehicle} demonstrates how raw technician findings become customer-safe authorization language, estimate assumptions, objection handling, and follow-up notes for ${input.customerType.toLowerCase()} conversations.`,
+    impact: "The buyer value is consistency: advisors get clearer language, service managers get cleaner documentation, and customers understand urgency without exaggerated claims.",
+    demoScript: `I would demo this by pasting technician notes, generating the customer explanation, then showing how estimate assumptions and objection responses stay separate from confirmed findings.`,
+    proofPlan: "A proof of value would measure declined-work reasons, advisor call time, documentation consistency, approval rate for safety-critical work, and fewer follow-up clarifications."
+  };
+}
+
+function renderExecutiveBrief(input, output) {
+  const brief = buildExecutiveBrief(input, output);
+  $("execSummary").textContent = brief.summary;
+  $("execImpact").textContent = brief.impact;
+  $("execDemoScript").textContent = brief.demoScript;
+  $("execProofPlan").textContent = brief.proofPlan;
+  currentExecutiveBrief = [
+    "Executive Demo Brief",
+    "",
+    `Summary: ${brief.summary}`,
+    `Buyer Impact: ${brief.impact}`,
+    `Live Demo Script: ${brief.demoScript}`,
+    `Proof Plan: ${brief.proofPlan}`
+  ].join("\n");
+}
+
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  document.body.removeChild(textarea);
+  if (!copied) {
+    throw new Error("Copy command failed.");
+  }
+}
+
 function renderOutput() {
   const input = readForm();
   const output = buildOutput(input);
@@ -175,6 +222,7 @@ function renderOutput() {
   $("waitResponse").textContent = output.waitResponse;
   $("costResponse").textContent = output.costResponse;
   $("clearResponse").textContent = output.clearResponse;
+  renderExecutiveBrief(input, output);
 }
 
 function activateTab(name) {
@@ -209,6 +257,15 @@ $("loadEvCase").addEventListener("click", () => {
 $("resetForm").addEventListener("click", () => {
   writeForm(samples.blank);
   renderOutput();
+});
+
+$("copyBrief").addEventListener("click", async () => {
+  try {
+    await copyText(currentExecutiveBrief);
+    $("copyStatus").textContent = "Copied.";
+  } catch {
+    $("copyStatus").textContent = "Copy unavailable in this browser.";
+  }
 });
 
 renderOutput();

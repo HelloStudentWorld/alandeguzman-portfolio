@@ -266,6 +266,60 @@ button.secondary {
   line-height: 1.45;
 }
 
+.brief-layout {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.brief-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  background: #ffffff;
+}
+
+.brief-card.primary-brief {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #0f2c2c 0%, #10231f 100%);
+  color: #ffffff;
+}
+
+.brief-card h2,
+.brief-card h3 {
+  margin: 0 0 10px;
+}
+
+.brief-card p {
+  margin: 0;
+  color: #5d6864;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.brief-card.primary-brief p {
+  color: #d8fffa;
+  font-size: 16px;
+}
+
+.brief-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.brief-actions button {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.copy-status {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .advisor-shell {
   display: grid;
   grid-template-columns: minmax(340px, 430px) minmax(460px, 1fr) minmax(260px, 320px);
@@ -588,6 +642,7 @@ dd {
   .result-grid,
   .estimate-layout,
   .objection-grid,
+  .brief-layout,
   .sales-panel {
     grid-template-columns: 1fr;
   }

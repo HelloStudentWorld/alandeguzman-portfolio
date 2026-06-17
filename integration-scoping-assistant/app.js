@@ -34,6 +34,8 @@ const examples = {
   }
 };
 
+let currentExecutiveBrief = "";
+
 function $(id) {
   return document.getElementById(id);
 }
@@ -223,6 +225,52 @@ function renderList(id, items, ordered = false) {
   }
 }
 
+function buildExecutiveBrief(input, output) {
+  const source = input.sourceSystem || "source system";
+  const target = input.targetSystem || "target system";
+  return {
+    summary: `This demo turns a vague integration request between ${source} and ${target} into a Sales Engineer-ready discovery brief, technical assumptions, PoV metrics, risk register, and implementation handoff.`,
+    impact: "The buyer value is deal control: unclear API asks become scoped proof plans with owners, success metrics, security boundaries, and measurable operational outcomes.",
+    demoScript: "I would demo this by starting with the buyer workflow, mapping source and target systems, surfacing assumptions, then closing with the proof-of-value metrics and handoff package.",
+    proofPlan: `A proof of value would validate ${input.cadence.toLowerCase()}, required data objects, auth ownership, alert trust, and whether ${input.buyerType.toLowerCase()} users act on the synced workflow without manual re-checking.`
+  };
+}
+
+function renderExecutiveBrief(input, output) {
+  const brief = buildExecutiveBrief(input, output);
+  $("execSummary").textContent = brief.summary;
+  $("execImpact").textContent = brief.impact;
+  $("execDemoScript").textContent = brief.demoScript;
+  $("execProofPlan").textContent = brief.proofPlan;
+  currentExecutiveBrief = [
+    "Executive Demo Brief",
+    "",
+    `Summary: ${brief.summary}`,
+    `Buyer Impact: ${brief.impact}`,
+    `Live Demo Script: ${brief.demoScript}`,
+    `Proof Plan: ${brief.proofPlan}`
+  ].join("\n");
+}
+
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  document.body.removeChild(textarea);
+  if (!copied) {
+    throw new Error("Copy command failed.");
+  }
+}
+
 function renderScope() {
   const input = readForm();
   const output = buildScope(input);
@@ -257,6 +305,7 @@ function renderScope() {
   $("escalationPath").textContent = output.escalationPath;
 
   $("talkTrack").textContent = `This workflow turns an integration request between ${source} and ${target} into discovery questions, assumptions, a PoV plan, and an implementation handoff.`;
+  renderExecutiveBrief(input, output);
 }
 
 function activateTab(name) {
@@ -291,6 +340,15 @@ $("loadDeliveryCase").addEventListener("click", () => {
 $("resetForm").addEventListener("click", () => {
   writeForm(examples.blank);
   renderScope();
+});
+
+$("copyBrief").addEventListener("click", async () => {
+  try {
+    await copyText(currentExecutiveBrief);
+    $("copyStatus").textContent = "Copied.";
+  } catch {
+    $("copyStatus").textContent = "Copy unavailable in this browser.";
+  }
 });
 
 renderScope();

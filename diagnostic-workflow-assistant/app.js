@@ -78,6 +78,8 @@ const defaultOutputs = {
   ]
 };
 
+let currentExecutiveBrief = "";
+
 function $(id) {
   return document.getElementById(id);
 }
@@ -239,6 +241,55 @@ function renderList(id, items) {
   });
 }
 
+function buildExecutiveBrief(input, output) {
+  const vehicle = input.vehicle || "the selected vehicle";
+  const dtcs = input.dtcs || "no DTCs entered";
+  const highRisk = input.urgency === "High" || input.urgency === "Safety critical";
+  return {
+    summary: `${vehicle} has a ${input.urgency.toLowerCase()} diagnostic workflow with ${dtcs}. The demo converts customer language, DTCs, scan observations, and operating conditions into a structured workflow for technicians, advisors, fleet stakeholders, and support teams.`,
+    impact: highRisk
+      ? "The buyer value is risk control: safer escalation, cleaner documentation, fewer repeated clarifications, and faster agreement on what must be validated before any repair recommendation."
+      : "The buyer value is workflow consistency: faster intake, better handoff notes, clearer advisor language, and fewer avoidable diagnostic loops.",
+    demoScript: `I would demo this by starting with the messy complaint, showing how the system separates safety checks from next tests, then switching to advisor language so non-technical stakeholders understand the next decision without overpromising.`,
+    proofPlan: "A proof of value would compare baseline diagnostic handoff time, number of clarification calls, repeat escalations, and advisor note quality before and after using this guided workflow."
+  };
+}
+
+function renderExecutiveBrief(input, output) {
+  const brief = buildExecutiveBrief(input, output);
+  $("execSummary").textContent = brief.summary;
+  $("execImpact").textContent = brief.impact;
+  $("execDemoScript").textContent = brief.demoScript;
+  $("execProofPlan").textContent = brief.proofPlan;
+  currentExecutiveBrief = [
+    "Executive Demo Brief",
+    "",
+    `Summary: ${brief.summary}`,
+    `Buyer Impact: ${brief.impact}`,
+    `Live Demo Script: ${brief.demoScript}`,
+    `Proof Plan: ${brief.proofPlan}`
+  ].join("\n");
+}
+
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  document.body.removeChild(textarea);
+  if (!copied) {
+    throw new Error("Copy command failed.");
+  }
+}
+
 function renderWorkflow() {
   const input = readForm();
   const output = buildWorkflow(input);
@@ -262,6 +313,7 @@ function renderWorkflow() {
   renderList("systemsToCheck", output.systemsToCheck);
   renderList("triageQuestions", output.triageQuestions);
   renderList("doNotAssume", output.doNotAssume);
+  renderExecutiveBrief(input, output);
 }
 
 function activateTab(name) {
@@ -296,6 +348,15 @@ $("loadHondaCase").addEventListener("click", () => {
 $("resetForm").addEventListener("click", () => {
   writeForm(sampleCases.blank);
   renderWorkflow();
+});
+
+$("copyBrief").addEventListener("click", async () => {
+  try {
+    await copyText(currentExecutiveBrief);
+    $("copyStatus").textContent = "Copied.";
+  } catch {
+    $("copyStatus").textContent = "Copy unavailable in this browser.";
+  }
 });
 
 renderWorkflow();

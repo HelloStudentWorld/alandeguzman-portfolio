@@ -108,6 +108,7 @@
           <button class="tab active" data-tab="diagnostic">Diagnostic Path</button>
           <button class="tab" data-tab="advisor">Advisor Explanation</button>
           <button class="tab" data-tab="obd">OBD Triage</button>
+          <button class="tab" data-tab="brief">Exec Brief</button>
         </nav>
 
         <section id="diagnostic" class="tab-panel active">
@@ -178,6 +179,31 @@
               <h3>Do Not Assume</h3>
               <ul id="doNotAssume"></ul>
             </article>
+          </div>
+        </section>
+
+        <section id="brief" class="tab-panel">
+          <div class="brief-layout">
+            <article class="brief-card primary-brief">
+              <h2>Executive Demo Brief</h2>
+              <p id="execSummary"></p>
+            </article>
+            <article class="brief-card">
+              <h3>Buyer Impact</h3>
+              <p id="execImpact"></p>
+            </article>
+            <article class="brief-card">
+              <h3>Live Demo Script</h3>
+              <p id="execDemoScript"></p>
+            </article>
+            <article class="brief-card">
+              <h3>Proof Plan</h3>
+              <p id="execProofPlan"></p>
+            </article>
+          </div>
+          <div class="brief-actions">
+            <button id="copyBrief" type="button">Copy Executive Brief</button>
+            <span id="copyStatus" class="copy-status" role="status" aria-live="polite"></span>
           </div>
         </section>
 

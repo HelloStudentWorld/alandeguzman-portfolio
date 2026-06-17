@@ -37,6 +37,8 @@ const cases = {
   }
 };
 
+let currentExecutiveBrief = "";
+
 function $(id) {
   return document.getElementById(id);
 }
@@ -235,6 +237,52 @@ function renderList(id, items) {
   });
 }
 
+function buildExecutiveBrief(input, output) {
+  const vehicle = input.vehicle || "the selected asset";
+  const dtcs = input.dtcs || "no DTCs entered";
+  return {
+    summary: `${vehicle} shows how ${dtcs} becomes an operational triage workflow instead of a raw fault-code alert. The demo routes code context into affected systems, red flags, next tests, dispatch questions, and handoff notes.`,
+    impact: "The buyer value is uptime discipline: fewer false escalations, better routing decisions, cleaner support handoffs, and less guessing from fault-code descriptions alone.",
+    demoScript: "I would demo this by switching between EV, emissions, and network cases to show that the same workflow engine adapts based on risk, asset status, and buyer context.",
+    proofPlan: "A proof of value would track reduction in false-positive dispatches, time to triage, cases escalated with complete evidence, and vehicles kept out of avoidable downtime."
+  };
+}
+
+function renderExecutiveBrief(input, output) {
+  const brief = buildExecutiveBrief(input, output);
+  $("execSummary").textContent = brief.summary;
+  $("execImpact").textContent = brief.impact;
+  $("execDemoScript").textContent = brief.demoScript;
+  $("execProofPlan").textContent = brief.proofPlan;
+  currentExecutiveBrief = [
+    "Executive Demo Brief",
+    "",
+    `Summary: ${brief.summary}`,
+    `Buyer Impact: ${brief.impact}`,
+    `Live Demo Script: ${brief.demoScript}`,
+    `Proof Plan: ${brief.proofPlan}`
+  ].join("\n");
+}
+
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  document.body.removeChild(textarea);
+  if (!copied) {
+    throw new Error("Copy command failed.");
+  }
+}
+
 function renderOutput() {
   const input = readForm();
   const output = buildOutput(input);
@@ -256,6 +304,7 @@ function renderOutput() {
   $("advisorNote").textContent = output.advisorNote;
   $("productSignal").textContent = output.productSignal;
   $("salesAngle").textContent = output.salesAngle;
+  renderExecutiveBrief(input, output);
 }
 
 function activateTab(name) {
@@ -295,6 +344,15 @@ $("loadNetworkCase").addEventListener("click", () => {
 $("resetForm").addEventListener("click", () => {
   writeForm(cases.blank);
   renderOutput();
+});
+
+$("copyBrief").addEventListener("click", async () => {
+  try {
+    await copyText(currentExecutiveBrief);
+    $("copyStatus").textContent = "Copied.";
+  } catch {
+    $("copyStatus").textContent = "Copy unavailable in this browser.";
+  }
 });
 
 renderOutput();

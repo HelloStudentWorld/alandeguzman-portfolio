@@ -130,6 +130,7 @@
           <button class="tab" data-tab="plan" type="button">Integration Plan</button>
           <button class="tab" data-tab="pov" type="button">PoV Metrics</button>
           <button class="tab" data-tab="risks" type="button">Risks</button>
+          <button class="tab" data-tab="brief" type="button">Exec Brief</button>
         </nav>
 
         <section id="discovery" class="tab-panel active">
@@ -235,6 +236,31 @@
               <h3>Escalation Path</h3>
               <p id="escalationPath"></p>
             </article>
+          </div>
+        </section>
+
+        <section id="brief" class="tab-panel">
+          <div class="brief-layout">
+            <article class="brief-card primary-brief">
+              <h2>Executive Demo Brief</h2>
+              <p id="execSummary"></p>
+            </article>
+            <article class="brief-card">
+              <h3>Buyer Impact</h3>
+              <p id="execImpact"></p>
+            </article>
+            <article class="brief-card">
+              <h3>Live Demo Script</h3>
+              <p id="execDemoScript"></p>
+            </article>
+            <article class="brief-card">
+              <h3>Proof Plan</h3>
+              <p id="execProofPlan"></p>
+            </article>
+          </div>
+          <div class="brief-actions">
+            <button id="copyBrief" type="button">Copy Executive Brief</button>
+            <span id="copyStatus" class="copy-status" role="status" aria-live="polite"></span>
           </div>
         </section>
 
