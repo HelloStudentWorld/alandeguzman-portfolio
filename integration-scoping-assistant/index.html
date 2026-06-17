@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Integration Scoping Assistant</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230f766e'/%3E%3Cpath d='M18 22h13v8H18zm15 12h13v8H33zM25 30v4h14' fill='none' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css?v=home-nav-20260617">
+    <link rel="stylesheet" href="styles.css?v=demo-upgrade-20260617">
   </head>
   <body>
     <header class="topbar">
@@ -21,10 +21,33 @@
       </div>
     </header>
 
+    <section class="insight-strip" aria-label="Demo impact summary">
+      <article>
+        <span>Systems mapped</span>
+        <strong>2</strong>
+        <small>Source and target workflow</small>
+      </article>
+      <article>
+        <span>PoV window</span>
+        <strong>30 days</strong>
+        <small>Success criteria defined</small>
+      </article>
+      <article>
+        <span>Open assumptions</span>
+        <strong>Tracked</strong>
+        <small>Auth, cadence, data objects</small>
+      </article>
+      <article>
+        <span>Buyer value</span>
+        <strong>Handoff</strong>
+        <small>Discovery to implementation</small>
+      </article>
+    </section>
+
     <main class="app-shell">
       <aside class="input-panel" aria-label="Integration scoping input">
         <section class="panel-header">
-          <h2>Scoping Intake</h2>
+          <div class="section-title"><span>1</span><h2>Scoping Intake</h2></div>
           <p>Capture the buyer workflow, systems, data objects, auth model, cadence, and success criteria.</p>
         </section>
 
@@ -112,7 +135,7 @@
         <section id="discovery" class="tab-panel active">
           <div class="result-header">
             <div>
-              <h2>Discovery Brief</h2>
+              <div class="section-title"><span>2</span><h2>Discovery Brief</h2></div>
               <p id="scopeSummary">Integration scoping for Fleet maintenance platform to Delivery dispatch system.</p>
             </div>
             <span id="riskPill" class="risk medium">Medium</span>
@@ -214,12 +237,33 @@
             </article>
           </div>
         </section>
+
+        <section class="proof-strip" aria-label="Supporting demo proof">
+          <div>
+            <strong>Sales demo angle</strong>
+            <span>Turn a vague API request into discovery, PoV, risk, and handoff structure.</span>
+          </div>
+          <div>
+            <strong>Proof-of-value metric</strong>
+            <span>Measure reduced manual checks and faster trusted operational alerts.</span>
+          </div>
+          <div>
+            <strong>Implementation handoff</strong>
+            <span>Clarify auth, cadence, data objects, owners, and risk controls.</span>
+          </div>
+        </section>
       </section>
 
       <aside class="sales-panel" aria-label="Sales engineer talk track">
         <section>
-          <h2>Sales Engineer Talk Track</h2>
+          <div class="section-title"><span>3</span><h2>Sales Engineer Talk Track</h2></div>
           <p id="talkTrack">This workflow turns a vague integration request into discovery questions, assumptions, a PoV plan, and an implementation handoff.</p>
+        </section>
+
+        <section class="impact-card">
+          <span>PoV outcome</span>
+          <strong>Trusted alerts</strong>
+          <p>Connect maintenance risk to dispatch impact with clear implementation scope.</p>
         </section>
 
         <section class="metric-list">

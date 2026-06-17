@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Service Advisor Estimate Generator</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230f766e'/%3E%3Cpath d='M18 22h28M18 32h28M18 42h18' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css?v=home-nav-20260617">
+    <link rel="stylesheet" href="styles.css?v=demo-upgrade-20260617">
   </head>
   <body>
     <header class="topbar">
@@ -21,10 +21,33 @@
       </div>
     </header>
 
+    <section class="insight-strip" aria-label="Demo impact summary">
+      <article>
+        <span>Approval clarity</span>
+        <strong>3 outputs</strong>
+        <small>Summary, estimate notes, objections</small>
+      </article>
+      <article>
+        <span>Customer risk</span>
+        <strong>High</strong>
+        <small>Safety-related brake example</small>
+      </article>
+      <article>
+        <span>Advisor time saved</span>
+        <strong>12 min</strong>
+        <small>Modeled per complex estimate</small>
+      </article>
+      <article>
+        <span>Buyer value</span>
+        <strong>Consistency</strong>
+        <small>Repeatable customer language</small>
+      </article>
+    </section>
+
     <main class="advisor-shell">
       <aside class="input-panel" aria-label="Advisor input">
         <section class="panel-header">
-          <h2>Technician Finding</h2>
+          <div class="section-title"><span>1</span><h2>Technician Finding</h2></div>
           <p>Convert accurate shop notes into language a customer can act on.</p>
         </section>
 
@@ -102,7 +125,7 @@
         <section id="customer" class="tab-panel active">
           <div class="result-header">
             <div>
-              <h2>Customer-Safe Explanation</h2>
+              <div class="section-title"><span>2</span><h2>Customer-Safe Explanation</h2></div>
               <p id="caseSummary">Advisor-ready summary for 2019 BMW X3.</p>
             </div>
             <span id="urgencyPill" class="risk high">High</span>
@@ -187,12 +210,33 @@
             </article>
           </div>
         </section>
+
+        <section class="proof-strip" aria-label="Supporting demo proof">
+          <div>
+            <strong>Sales demo angle</strong>
+            <span>Translate raw technician findings into buyer-safe approval language.</span>
+          </div>
+          <div>
+            <strong>Proof-of-value metric</strong>
+            <span>Track fewer declined repairs caused by unclear explanations.</span>
+          </div>
+          <div>
+            <strong>Implementation handoff</strong>
+            <span>Separate confirmed findings, assumptions, urgency, and objection notes.</span>
+          </div>
+        </section>
       </section>
 
       <aside class="sales-panel" aria-label="Sales engineer value">
         <section>
-          <h2>Sales Engineer Talk Track</h2>
+          <div class="section-title"><span>3</span><h2>Sales Engineer Talk Track</h2></div>
           <p>This demo shows how service software can turn technician notes into clear authorization language without exaggerating the repair.</p>
+        </section>
+
+        <section class="impact-card">
+          <span>Modeled advisor lift</span>
+          <strong>12 min / RO</strong>
+          <p>Saved by standardizing customer explanation and next-step framing.</p>
         </section>
 
         <section class="metric-list">

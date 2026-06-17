@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>OBD Fault-Code Triage Tool</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230f766e'/%3E%3Cpath d='M18 20h28v24H18zM24 28h16M24 36h10' stroke='white' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css?v=home-nav-20260617">
+    <link rel="stylesheet" href="styles.css?v=demo-upgrade-20260617">
   </head>
   <body>
     <header class="topbar">
@@ -22,10 +22,33 @@
       </div>
     </header>
 
+    <section class="insight-strip" aria-label="Demo impact summary">
+      <article>
+        <span>Fault context</span>
+        <strong>4 inputs</strong>
+        <small>DTC, symptom, observations, status</small>
+      </article>
+      <article>
+        <span>Dispatch confidence</span>
+        <strong>Higher</strong>
+        <small>Questions before escalation</small>
+      </article>
+      <article>
+        <span>Risk flags</span>
+        <strong>Safety</strong>
+        <small>HV, emissions, network examples</small>
+      </article>
+      <article>
+        <span>Buyer value</span>
+        <strong>Uptime</strong>
+        <small>Fault data becomes action logic</small>
+      </article>
+    </section>
+
     <main class="triage-shell">
       <aside class="input-panel" aria-label="OBD triage input">
         <section class="panel-header">
-          <h2>Fault Intake</h2>
+          <div class="section-title"><span>1</span><h2>Fault Intake</h2></div>
           <p>A DTC is a clue, not a conclusion. Enter the code set and context before deciding next steps.</p>
         </section>
 
@@ -91,7 +114,7 @@
         <section id="triage" class="tab-panel active">
           <div class="result-header">
             <div>
-              <h2>Structured Triage</h2>
+              <div class="section-title"><span>2</span><h2>Structured Triage</h2></div>
               <p id="caseSummary">Initial triage for 2018 MINI Cooper SE.</p>
             </div>
             <span id="severityPill" class="risk high">High</span>
@@ -162,12 +185,33 @@
             </article>
           </div>
         </section>
+
+        <section class="proof-strip" aria-label="Supporting demo proof">
+          <div>
+            <strong>Sales demo angle</strong>
+            <span>Show why fault codes need workflow context before dispatch or repair.</span>
+          </div>
+          <div>
+            <strong>Proof-of-value metric</strong>
+            <span>Reduce false-positive escalations and avoidable vehicle downtime.</span>
+          </div>
+          <div>
+            <strong>Implementation handoff</strong>
+            <span>Codify red flags, next tests, dispatch questions, and buyer notes.</span>
+          </div>
+        </section>
       </section>
 
       <aside class="sales-panel" aria-label="Sales engineer value">
         <section>
-          <h2>Sales Engineer Talk Track</h2>
+          <div class="section-title"><span>3</span><h2>Sales Engineer Talk Track</h2></div>
           <p>This demo shows why fault data needs workflow context before it becomes a repair, dispatch, warranty, or uptime decision.</p>
+        </section>
+
+        <section class="impact-card">
+          <span>Modeled fleet value</span>
+          <strong>Fewer false escalations</strong>
+          <p>Prioritize real downtime risk instead of treating every DTC as equal.</p>
         </section>
 
         <section class="metric-list">

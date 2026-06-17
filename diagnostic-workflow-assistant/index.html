@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Diagnostic Workflow Assistant</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230f766e'/%3E%3Cpath d='M18 33h28M32 19v28' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css?v=home-nav-20260617">
+    <link rel="stylesheet" href="styles.css?v=demo-upgrade-20260617">
   </head>
   <body>
     <header class="topbar">
@@ -21,10 +21,33 @@
       </div>
     </header>
 
+    <section class="insight-strip" aria-label="Demo impact summary">
+      <article>
+        <span>Diagnostic time saved</span>
+        <strong>1.7 hrs</strong>
+        <small>Estimated vs. standard intake</small>
+      </article>
+      <article>
+        <span>Stakeholders aligned</span>
+        <strong>4</strong>
+        <small>Fleet, tech, advisor, support</small>
+      </article>
+      <article>
+        <span>Risk flags</span>
+        <strong>2</strong>
+        <small>High-voltage and interlock</small>
+      </article>
+      <article>
+        <span>Demo value</span>
+        <strong>$12.4k/mo</strong>
+        <small>Modeled fleet impact</small>
+      </article>
+    </section>
+
     <main class="app-shell">
       <aside class="input-panel" aria-label="Diagnostic input">
         <section class="panel-header">
-          <h2>Case Intake</h2>
+          <div class="section-title"><span>1</span><h2>Case Intake</h2></div>
           <p>Enter symptoms, vehicle context, DTCs, and observations.</p>
         </section>
 
@@ -90,7 +113,7 @@
         <section id="diagnostic" class="tab-panel active">
           <div class="result-header">
             <div>
-              <h2>Generated Workflow</h2>
+              <div class="section-title"><span>2</span><h2>Generated Workflow</h2></div>
               <p id="caseSummary">Structured triage for 2018 MINI Cooper SE.</p>
             </div>
             <span id="riskPill" class="risk high">High</span>
@@ -157,12 +180,33 @@
             </article>
           </div>
         </section>
+
+        <section class="proof-strip" aria-label="Supporting demo proof">
+          <div>
+            <strong>Sales demo angle</strong>
+            <span>Show how messy technician context becomes consistent workflow output.</span>
+          </div>
+          <div>
+            <strong>Proof-of-value metric</strong>
+            <span>Measure reduced diagnostic handoff time and fewer repeat clarifications.</span>
+          </div>
+          <div>
+            <strong>Implementation handoff</strong>
+            <span>Inputs, assumptions, risk flags, and advisor explanation are clearly separated.</span>
+          </div>
+        </section>
       </section>
 
       <aside class="sales-panel" aria-label="Sales engineer value">
         <section>
-          <h2>Sales Engineer Talk Track</h2>
+          <div class="section-title"><span>3</span><h2>Sales Engineer Talk Track</h2></div>
           <p>This workflow reduces intake ambiguity, improves note quality, and helps technical and non-technical stakeholders agree on the next step.</p>
+        </section>
+
+        <section class="impact-card">
+          <span>Estimated fleet impact</span>
+          <strong>$12,450 / mo</strong>
+          <p>Modeled from fewer repeat escalations across 10 similar vehicles.</p>
         </section>
 
         <section class="metric-list">
