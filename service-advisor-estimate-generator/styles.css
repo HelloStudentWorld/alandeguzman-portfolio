@@ -320,6 +320,16 @@ button.secondary {
   font-size: 13px;
 }
 
+.brief-copy-label {
+  display: block;
+  margin-top: 16px;
+  color: #31413c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .brief-copy-box {
   width: 100%;
   min-height: 126px;

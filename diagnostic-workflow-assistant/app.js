@@ -347,7 +347,12 @@ $("resetForm").addEventListener("click", () => {
 
 $("copyBrief").addEventListener("click", async () => {
   try {
-    const copied = await copyText(currentExecutiveBrief);
+    if (!currentExecutiveBrief) {
+      renderWorkflow();
+    }
+    const briefText = currentExecutiveBrief || $("briefText").value;
+    $("briefText").value = briefText;
+    const copied = await copyText(briefText);
     $("copyStatus").textContent = copied ? "Copied." : "Selected. Press Ctrl+C.";
   } catch {
     $("briefText").focus();
