@@ -5,369 +5,239 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Diagnostic Workflow Assistant</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230f766e'/%3E%3Cpath d='M18 33h28M32 19v28' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css?v=interactive-demo-20260617">
+    <link rel="stylesheet" href="styles.css?v=static-ai-dashboard-20260617">
   </head>
   <body>
-    <header class="topbar">
-      <div>
-        <h1>Diagnostic Workflow Assistant</h1>
-        <p>Portfolio demo for automotive SaaS, fleet, telematics, diagnostics, and EV service teams.</p>
+    <header class="app-bar">
+      <div class="brand-group">
+        <button class="icon-button" type="button" aria-label="Menu">=</button>
+        <div>
+          <h1>Diagnostic Workflow Assistant</h1>
+          <p>Static simulated-AI workflow demo for automotive SaaS, fleet, and EV service teams</p>
+        </div>
       </div>
-      <div class="topbar-actions">
-        <a class="home-link" href="../index.html" aria-label="Return to portfolio home">Back to Portfolio</a>
-        <button id="loadMiniCase" class="secondary">MINI EV Case</button>
-        <button id="loadHondaCase" class="secondary">Honda Emissions Case</button>
-        <button id="resetForm">Reset</button>
+      <label class="search-box" aria-label="Search">
+        <span>Search</span>
+        <input type="search" placeholder="Search cases, DTCs, components, bulletins...">
+        <kbd>Ctrl K</kbd>
+      </label>
+      <div class="app-actions">
+        <div class="case-switcher" aria-label="Demo cases">
+          <button id="loadMiniCase" data-case="mini" class="active" type="button">MINI EV Case</button>
+          <button id="loadHondaCase" data-case="honda" type="button">Honda Emissions</button>
+        </div>
+        <label class="persona-select">
+          Buyer Persona
+          <select id="buyerPersona">
+            <option value="fleet" selected>Fleet Manager</option>
+            <option value="service">Service Director</option>
+            <option value="support">Remote Support</option>
+            <option value="exec">Executive Buyer</option>
+          </select>
+        </label>
+        <button class="theme-toggle" type="button" aria-label="Theme preview"><span></span></button>
+        <button id="briefButton" class="exec-button" type="button">Exec Brief</button>
+        <span id="briefStatus" class="brief-status" aria-live="polite"></span>
       </div>
     </header>
 
-    <section class="insight-strip" aria-label="Demo impact summary">
-      <article>
-        <span>Diagnostic time saved</span>
-        <strong id="topTimeSaved">1.7 hrs</strong>
-        <small id="topTimeNote">Estimated vs. standard intake</small>
+    <section class="case-strip" aria-label="Case summary">
+      <article class="case-card">
+        <div class="case-id"><strong id="caseId">CASE-2025-0616-0842</strong><span id="caseStatus">Live</span></div>
+        <h2 id="caseVehicle">2018 MINI Cooper SE (F56)</h2>
+        <p id="caseVin">VIN: MMWXP7C57J2A12345 - 45,678 mi</p>
       </article>
-      <article>
-        <span>Stakeholders aligned</span>
-        <strong id="topStakeholders">4</strong>
-        <small id="topStakeholderNote">Fleet, tech, advisor, support</small>
+      <article class="summary-metric">
+        <span>System Area</span>
+        <strong id="systemArea">High Voltage System</strong>
       </article>
-      <article>
-        <span>Risk flags</span>
-        <strong id="topRiskFlags">2</strong>
-        <small id="topRiskNote">High-voltage and interlock</small>
+      <article class="summary-metric warning">
+        <span>Risk Level</span>
+        <strong id="riskLevel">High</strong>
       </article>
-      <article>
-        <span>Demo value</span>
-        <strong id="topDemoValue">$12.4k/mo</strong>
-        <small id="topDemoNote">Modeled fleet impact</small>
+      <article class="summary-metric">
+        <span>Confidence</span>
+        <div class="confidence-line"><strong id="confidenceValue">78%</strong><i><b id="confidenceBar"></b></i></div>
+      </article>
+      <article class="summary-metric">
+        <span>Est. Labor</span>
+        <strong id="laborEstimate">1.6 - 2.4 hrs</strong>
+      </article>
+      <article class="summary-metric">
+        <span>Parts Est. (Assumption)</span>
+        <strong id="partsEstimate">$780 - $1,250</strong>
+      </article>
+      <article class="summary-metric">
+        <span>Created</span>
+        <strong>Today, 8:42 AM</strong>
       </article>
     </section>
 
-    <section class="command-center" aria-label="Sales engineer command center">
-      <div class="command-header">
-        <div>
-          <span class="eyebrow">Productized sales demo</span>
-          <h2>Diagnostic operations command center</h2>
-          <p>Shows how a messy shop-floor concern becomes risk triage, buyer language, implementation handoff, and measurable proof-of-value.</p>
-        </div>
-        <div class="command-actions">
-          <div class="live-badge"><span></span> Live case model</div>
-          <div class="persona-switcher" aria-label="Buyer persona">
-            <button class="persona active" type="button" data-persona="fleet">Fleet</button>
-            <button class="persona" type="button" data-persona="service">Service Ops</button>
-            <button class="persona" type="button" data-persona="support">Support</button>
-            <button class="persona" type="button" data-persona="exec">Exec</button>
+    <main class="dashboard-grid">
+      <aside class="left-rail">
+        <section class="panel">
+          <div class="panel-title">
+            <h2><span>1</span> Case Intake</h2>
+            <button id="clearCase" type="button">Clear</button>
           </div>
-        </div>
-      </div>
-
-      <div class="command-grid">
-        <article class="signal-tile">
-          <span id="primaryRiskLabel">Primary risk</span>
-          <strong id="primaryRiskValue">High-voltage isolation</strong>
-          <div class="signal-meter"><i id="primaryRiskMeter" style="width: 88%"></i></div>
-          <small id="primaryRiskNote">Safety workflow before drivability workflow</small>
-        </article>
-        <article class="signal-tile">
-          <span id="confidenceLabel">Root-cause confidence</span>
-          <strong id="confidenceValue">Connector / insulation pattern</strong>
-          <div class="signal-meter amber"><i id="confidenceMeter" style="width: 72%"></i></div>
-          <small id="confidenceNote">Needs freeze-frame and controlled retest</small>
-        </article>
-        <article class="signal-tile">
-          <span id="proofMetricLabel">Buyer proof metric</span>
-          <strong id="proofMetricValue">Repeat escalations</strong>
-          <div class="signal-meter green"><i id="proofMetricMeter" style="width: 64%"></i></div>
-          <small id="proofMetricNote">Track fewer clarification loops per case</small>
-        </article>
-        <article class="signal-tile">
-          <span id="handoffLabel">Handoff package</span>
-          <strong id="handoffValue">Tech + advisor + fleet</strong>
-          <div class="signal-meter"><i id="handoffMeter" style="width: 80%"></i></div>
-          <small id="handoffNote">Same evidence translated by audience</small>
-        </article>
-      </div>
-
-      <div class="demo-intelligence">
-        <article class="timeline-card">
-          <div class="card-heading">
-            <h3>Live Diagnostic Timeline</h3>
-            <span id="timelineStatus">Safety gate active</span>
-          </div>
-          <ol id="diagnosticTimeline" class="diagnostic-timeline"></ol>
-        </article>
-        <article class="buyer-panel">
-          <div class="card-heading">
-            <h3 id="personaTitle">Fleet buyer view</h3>
-            <span id="personaBadge">Downtime</span>
-          </div>
-          <p id="personaNarrative"></p>
-          <ul id="personaBullets"></ul>
-        </article>
-      </div>
-
-      <div class="demo-intelligence bottom-row">
-        <article class="proof-ledger">
-          <div class="card-heading">
-            <h3>Proof-of-Value Ledger</h3>
-            <span id="povStatus">Modeled</span>
-          </div>
-          <dl>
-            <div><dt>Baseline</dt><dd id="baselineProof">Unstructured notes, repeated clarification, unclear risk ownership</dd></div>
-            <div><dt>With workflow</dt><dd id="workflowProof">Validated next test, safety boundary, buyer-ready summary</dd></div>
-            <div><dt>Measured outcome</dt><dd id="measuredProof">Time to triage, repeat contacts, escalations with complete evidence</dd></div>
-          </dl>
-        </article>
-        <article class="pov-card">
-          <div class="card-heading">
-            <h3>ROI Assumptions</h3>
-            <span>Live calculator</span>
-          </div>
-          <div class="pov-controls">
-            <label>Vehicles affected <input id="affectedVehicles" type="number" min="1" max="250" value="10"></label>
-            <label>Downtime $/hr <input id="downtimeCost" type="number" min="25" max="500" value="175"></label>
-            <label>Hours saved/case <input id="hoursSaved" type="number" min="0.25" max="8" step="0.25" value="1.7"></label>
-          </div>
-          <div class="pov-result">
-            <span>Modeled monthly impact</span>
-            <strong id="modeledImpact">$12,450</strong>
-            <small id="modeledImpactNote">Assumes recurring complex cases across a small fleet cohort.</small>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <main class="app-shell">
-      <aside class="input-panel" aria-label="Diagnostic input">
-        <section class="panel-header">
-          <div class="section-title"><span>1</span><h2>Case Intake</h2></div>
-          <p>Enter symptoms, vehicle context, DTCs, and observations.</p>
+          <form id="diagnosticForm">
+            <label>
+              Customer Complaint
+              <textarea id="complaint" maxlength="500" rows="4">Intermittent reduced power warning after charging. Warning appears most often during first drive of the day.</textarea>
+              <small><span id="complaintCount">97</span>/500</small>
+            </label>
+            <label>
+              DTCs
+              <input id="dtcs" type="text" value="P0A0A, P0AA6">
+            </label>
+            <label>
+              Scan Observations
+              <textarea id="observations" maxlength="500" rows="5">High-voltage interlock status intermittent. Insulation value varies after overnight charge. No visible coolant contamination. 12V battery passes basic test.</textarea>
+              <small><span id="observationsCount">118</span>/500</small>
+            </label>
+            <label>
+              Operating Conditions
+              <select id="conditions">
+                <option selected>Cold start after overnight charge</option>
+                <option>Warm engine mixed drive cycle</option>
+                <option>Highway cruise under load</option>
+                <option>Concern not currently reproducible</option>
+              </select>
+            </label>
+            <div class="field-row">
+              <label>
+                Environment
+                <select id="environment">
+                  <option selected>Dealer service</option>
+                  <option>Fleet maintenance</option>
+                  <option>Remote support</option>
+                </select>
+              </label>
+              <label>
+                Urgency
+                <select id="urgency">
+                  <option selected>High</option>
+                  <option>Medium</option>
+                  <option>Low</option>
+                </select>
+              </label>
+            </div>
+            <button class="run-button" type="submit">Run Diagnostic Workflow</button>
+          </form>
         </section>
 
-        <form id="diagnosticForm">
-          <label>
-            Vehicle
-            <input id="vehicle" name="vehicle" type="text" value="2018 MINI Cooper SE" autocomplete="off">
-          </label>
-
-          <label>
-            Customer Complaint
-            <textarea id="complaint" name="complaint" rows="4">Intermittent reduced power warning after charging. Customer reports the warning appears most often during the first drive of the day.</textarea>
-          </label>
-
-          <label>
-            DTCs
-            <input id="dtcs" name="dtcs" type="text" value="P0A0A, P0AA6" autocomplete="off">
-          </label>
-
-          <label>
-            Scan Observations
-            <textarea id="observations" name="observations" rows="5">High-voltage interlock status intermittent. Insulation value varies after overnight charge. No visible coolant contamination. 12V battery passes basic test.</textarea>
-          </label>
-
-          <label>
-            Operating Conditions
-            <textarea id="conditions" name="conditions" rows="3">Cold start after overnight charge. Warning clears after key cycle but returns intermittently.</textarea>
-          </label>
-
-          <div class="field-grid">
-            <label>
-              Environment
-              <select id="environment" name="environment">
-                <option>Dealer service</option>
-                <option>Fleet maintenance</option>
-                <option>Remote support</option>
-                <option>Mobile service</option>
-              </select>
-            </label>
-
-            <label>
-              Urgency
-              <select id="urgency" name="urgency">
-                <option>Safety critical</option>
-                <option selected>High</option>
-                <option>Medium</option>
-                <option>Low</option>
-              </select>
-            </label>
+        <section class="panel signal-panel">
+          <div class="panel-title">
+            <h2><span>2</span> Live Signal Snapshot</h2>
+            <label class="auto-refresh">Auto-refresh <input id="autoRefresh" type="checkbox" checked></label>
           </div>
-
-          <button class="primary" type="submit">Run Diagnostic Workflow</button>
-        </form>
+          <div id="signalGrid" class="signal-grid"></div>
+          <a class="view-link" href="#workflowPanel">View all live signals (24)</a>
+        </section>
       </aside>
 
-      <section class="workspace" aria-label="Workflow results">
-        <nav class="tabs" aria-label="Output tabs">
-          <button class="tab active" data-tab="diagnostic">Diagnostic Path</button>
+      <section class="center-stage">
+        <nav class="workflow-tabs" aria-label="Workflow tabs">
+          <button class="tab active" data-tab="workflow">Diagnostic Workflow</button>
           <button class="tab" data-tab="advisor">Advisor Explanation</button>
           <button class="tab" data-tab="obd">OBD Triage</button>
-          <button class="tab" data-tab="brief">Exec Brief</button>
         </nav>
 
-        <section id="diagnostic" class="tab-panel active">
-          <div class="result-header">
+        <section id="workflowPanel" class="stage-panel active">
+          <div class="stage-header">
             <div>
-              <div class="section-title"><span>2</span><h2>Generated Workflow</h2></div>
-              <p id="caseSummary">Structured triage for 2018 MINI Cooper SE.</p>
+              <h2><span>3</span> Diagnostic Workflow</h2>
+              <p id="workflowSubtitle">Recommended path for high-voltage intermittent warning.</p>
             </div>
-            <span id="riskPill" class="risk high">High</span>
+            <button class="ghost-button" type="button">View full workflow</button>
           </div>
 
-          <div class="result-grid">
+          <section class="recommended-path">
+            <h3>Recommended Path</h3>
+            <ol id="pathSteps"></ol>
+          </section>
+
+          <section class="table-card">
+            <h3 id="currentStepTitle">Current Step: 2 of 6 - HV System Checks</h3>
+            <table>
+              <thead><tr><th>Step</th><th>Result</th><th>Details</th></tr></thead>
+              <tbody id="stepRows"></tbody>
+            </table>
+          </section>
+
+          <section class="table-card">
+            <h3>Likely Root Causes <span>(Top 3)</span></h3>
+            <table>
+              <thead><tr><th>Rank</th><th>Root Cause</th><th>Probability</th><th>Why</th></tr></thead>
+              <tbody id="rootCauseRows"></tbody>
+            </table>
+            <a class="view-link" href="#nextSteps">See full analysis and supporting data</a>
+          </section>
+
+          <section id="nextSteps" class="next-steps-card">
             <article>
-              <h3>Likely Diagnostic Paths</h3>
-              <ol id="diagnosticPaths"></ol>
+              <h3>Next Test Steps Preview</h3>
+              <ol id="nextTestSteps"></ol>
             </article>
             <article>
-              <h3>Safety Checks</h3>
-              <ul id="safetyChecks"></ul>
+              <h3>Required Tools</h3>
+              <ul id="requiredTools"></ul>
+              <button class="outline-button" type="button">Export Tech Plan</button>
             </article>
-            <article>
-              <h3>Next Test Steps</h3>
-              <ol id="testSteps"></ol>
-            </article>
-            <article>
-              <h3>Technician Notes</h3>
-              <ul id="technicianNotes"></ul>
-            </article>
-          </div>
+          </section>
         </section>
 
-        <section id="advisor" class="tab-panel">
-          <div class="advisor-layout">
-            <article>
-              <h2>Service-Advisor Explanation</h2>
-              <p id="advisorExplanation"></p>
-            </article>
-            <article>
-              <h3>Customer-Safe Next Step</h3>
-              <p id="customerNextStep"></p>
-            </article>
-            <article>
-              <h3>Assumptions To Confirm</h3>
-              <ul id="assumptions"></ul>
-            </article>
-            <article>
-              <h3>Objection Handling</h3>
-              <p id="objectionHandling"></p>
-            </article>
-          </div>
+        <section id="advisorPanel" class="stage-panel">
+          <article class="explanation-card">
+            <h2>Advisor Explanation</h2>
+            <p id="advisorExplanation"></p>
+            <h3>Customer-safe next step</h3>
+            <p id="customerNextStep"></p>
+            <h3>Objection handling</h3>
+            <p id="objectionHandling"></p>
+          </article>
         </section>
 
-        <section id="obd" class="tab-panel">
-          <div class="obd-grid">
-            <article>
-              <h2>Fault-Code Triage</h2>
-              <p id="obdSummary"></p>
-            </article>
-            <article>
-              <h3>Systems To Check</h3>
-              <ul id="systemsToCheck"></ul>
-            </article>
-            <article>
-              <h3>Questions Before Escalation</h3>
-              <ul id="triageQuestions"></ul>
-            </article>
-            <article>
-              <h3>Do Not Assume</h3>
-              <ul id="doNotAssume"></ul>
-            </article>
-          </div>
-        </section>
-
-        <section id="brief" class="tab-panel">
-          <div class="brief-layout">
-            <article class="brief-card primary-brief">
-              <h2>Executive Demo Brief</h2>
-              <p id="execSummary"></p>
-            </article>
-            <article class="brief-card">
-              <h3>Buyer Impact</h3>
-              <p id="execImpact"></p>
-            </article>
-            <article class="brief-card">
-              <h3>Live Demo Script</h3>
-              <p id="execDemoScript"></p>
-            </article>
-            <article class="brief-card">
-              <h3>Proof Plan</h3>
-              <p id="execProofPlan"></p>
-            </article>
-          </div>
-          <div class="brief-actions">
-            <button id="copyBrief" type="button">Copy Executive Brief</button>
-            <span id="copyStatus" class="copy-status" role="status" aria-live="polite"></span>
-          </div>
-          <label class="brief-copy-label" for="briefText">Copy-ready talk track</label>
-          <textarea id="briefText" class="brief-copy-box" readonly aria-label="Copy-ready executive brief"></textarea>
-        </section>
-
-        <section class="proof-strip" aria-label="Supporting demo proof">
-          <div>
-            <strong>Sales demo angle</strong>
-            <span>Show how messy technician context becomes consistent workflow output.</span>
-          </div>
-          <div>
-            <strong>Proof-of-value metric</strong>
-            <span>Measure reduced diagnostic handoff time and fewer repeat clarifications.</span>
-          </div>
-          <div>
-            <strong>Implementation handoff</strong>
-            <span>Inputs, assumptions, risk flags, and advisor explanation are clearly separated.</span>
-          </div>
+        <section id="obdPanel" class="stage-panel">
+          <article class="explanation-card">
+            <h2>OBD Triage</h2>
+            <p id="obdSummary"></p>
+            <div class="obd-columns">
+              <section><h3>Systems To Check</h3><ul id="systemsToCheck"></ul></section>
+              <section><h3>Questions Before Escalation</h3><ul id="triageQuestions"></ul></section>
+              <section><h3>Do Not Assume</h3><ul id="doNotAssume"></ul></section>
+            </div>
+          </article>
         </section>
       </section>
 
-      <aside class="sales-panel" aria-label="Sales engineer value">
-        <section>
-          <div class="section-title"><span>3</span><h2>Sales Engineer Talk Track</h2></div>
-          <p>This workflow reduces intake ambiguity, improves note quality, and helps technical and non-technical stakeholders agree on the next step.</p>
+      <aside class="right-rail">
+        <section class="panel buyer-impact">
+          <h2>Buyer Impact</h2>
+          <div id="impactCards" class="impact-stack"></div>
         </section>
-
-        <section class="impact-card">
-          <span>Estimated fleet impact</span>
-          <strong>$12,450 / mo</strong>
-          <p>Modeled from fewer repeat escalations across 10 similar vehicles.</p>
-        </section>
-
-        <section class="metric-list">
-          <h3>Buyer Value</h3>
-          <div>
-            <strong>Fleet manager</strong>
-            <span>Prioritize downtime and safety risks.</span>
+        <section class="panel demo-script">
+          <div class="panel-title">
+            <h2>Demo Script</h2>
+            <span>15 min talk track</span>
           </div>
-          <div>
-            <strong>Technician</strong>
-            <span>Start with clearer context and test logic.</span>
-          </div>
-          <div>
-            <strong>Advisor</strong>
-            <span>Explain findings without overpromising.</span>
-          </div>
-          <div>
-            <strong>Support team</strong>
-            <span>Escalate with cleaner notes and assumptions.</span>
-          </div>
-        </section>
-
-        <section>
-          <h3>Discovery Questions</h3>
-          <ul class="compact-list">
-            <li>Where does diagnostic context get lost today?</li>
-            <li>How do DTCs become work orders?</li>
-            <li>What does one day of downtime cost?</li>
-            <li>Who needs the output to trust the next step?</li>
-          </ul>
-        </section>
-
-        <section class="demo-note">
-          <h3>Demo Boundary</h3>
-          <p>Outputs are workflow support only. A qualified technician must validate safety, test results, repair decisions, and final recommendations.</p>
+          <ol id="demoScript"></ol>
+          <button class="outline-button deck-button" type="button">Download Demo Deck</button>
         </section>
       </aside>
     </main>
 
-    <script src="app.js?v=interactive-demo-20260617"></script>
+    <footer class="status-bar">
+      <span><i></i> Data Source: Simulated</span>
+      <span>Portfolio workflow demo - no OEM data access or production repair recommendation</span>
+      <span>Alerts <b>2</b></span>
+      <span>Notes <b>3</b></span>
+      <span>Attachments <b>1</b></span>
+      <span class="push-right">Last autosave: 8:43 AM</span>
+      <a href="../index.html">Back to portfolio</a>
+    </footer>
+
+    <textarea id="briefText" class="sr-only" aria-hidden="true" tabindex="-1"></textarea>
+    <script src="app.js?v=static-ai-dashboard-20260617"></script>
   </body>
 </html>
