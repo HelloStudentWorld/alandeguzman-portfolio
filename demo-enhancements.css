@@ -52,12 +52,18 @@
 
 .demo-mode-control button,
 .demo-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 34px;
   border: 1px solid transparent;
   border-radius: 6px;
   padding: 7px 10px;
   font-size: 12px;
   font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
   white-space: nowrap;
 }
 

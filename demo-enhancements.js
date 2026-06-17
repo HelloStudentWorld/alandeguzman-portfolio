@@ -151,6 +151,7 @@
       </div>
       <button class="demo-action-button" type="button" data-open-workflow>View full workflow</button>
       <button class="demo-action-button" type="button" data-copy-talk>Copy SE talk track</button>
+      <a class="demo-action-button" href="../deliverables/portfolio_demo_deck.pdf" target="_blank" rel="noopener">Download Demo Deck</a>
       <span class="demo-search-status">Search highlights the generated workflow.</span>
       <span class="demo-copy-status" aria-live="polite"></span>
     `;
