@@ -34,6 +34,10 @@ select {
   font: inherit;
 }
 
+a {
+  color: inherit;
+}
+
 .topbar {
   min-height: 84px;
   display: flex;
@@ -76,6 +80,29 @@ button {
   cursor: pointer;
   font-size: 14px;
   font-weight: 650;
+}
+
+.home-link {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #2e4449;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #ffffff;
+  background: #1d2a31;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.home-link:hover {
+  background: #263842;
+}
+
+.home-link:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.35);
+  outline-offset: 1px;
 }
 
 button:hover {
