@@ -136,6 +136,7 @@
 
 .workflow-map,
 .proof-ledger {
+  min-width: 0;
   padding: 16px;
   background: #ffffff;
 }
@@ -152,6 +153,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  max-width: 100%;
   overflow-x: auto;
   padding-bottom: 2px;
 }
@@ -218,6 +220,7 @@
   .command-center {
     margin: 12px;
     padding: 14px;
+    overflow: hidden;
   }
 
   .command-header {
