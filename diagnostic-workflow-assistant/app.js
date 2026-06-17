@@ -173,8 +173,28 @@ const personas = {
 
 let activeModel = null;
 let currentBrief = "";
+let currentTalkTrack = "";
+let activeDemoMode = "15";
 
 const $ = (id) => document.getElementById(id);
+
+const demoModes = {
+  5: {
+    label: "5 min talk track",
+    framing: "fast recruiter screen",
+    steps: ["Problem", "Workflow", "Buyer value"]
+  },
+  15: {
+    label: "15 min talk track",
+    framing: "standard Sales Engineer interview demo",
+    steps: ["Problem", "Approach", "Live demo", "Business impact", "Next step"]
+  },
+  30: {
+    label: "30 min talk track",
+    framing: "deep-dive panel demo",
+    steps: ["Discovery", "Current-state pain", "Workflow walkthrough", "Technical validation", "Persona handoff", "ROI model", "Pilot plan"]
+  }
+};
 
 function cloneCase(key) {
   return JSON.parse(JSON.stringify(caseLibrary[key] || caseLibrary.mini));
@@ -255,6 +275,20 @@ function setText(id, text) {
   if (node) node.textContent = text;
 }
 
+function markSearchable(node, text) {
+  if (!node) return;
+  node.classList.add("searchable");
+  node.dataset.search = String(text || node.textContent || "").toLowerCase();
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 function clearNode(node) {
   while (node.firstChild) node.removeChild(node.firstChild);
 }
@@ -282,6 +316,11 @@ function renderCaseStrip(model) {
   $("confidenceBar").style.width = `${model.confidence}%`;
   setText("laborEstimate", model.labor);
   setText("partsEstimate", model.parts);
+  markSearchable($("caseVehicle"), `${model.vehicle} ${model.dtcs}`);
+  markSearchable($("caseVin"), model.vin);
+  markSearchable($("systemArea"), model.system);
+  markSearchable($("riskLevel"), model.risk);
+  markSearchable($("partsEstimate"), model.parts);
 }
 
 function renderSignals(model) {
@@ -290,6 +329,7 @@ function renderSignals(model) {
   model.signals.forEach(([label, value, status, tone, points]) => {
     const card = document.createElement("article");
     card.className = `signal-card ${tone}`;
+    markSearchable(card, `${label} ${value} ${status}`);
     card.innerHTML = `<span>${label}</span><strong></strong>${sparkline(points, tone)}<small></small>`;
     card.querySelector("strong").textContent = value;
     card.querySelector("small").textContent = status;
@@ -303,6 +343,7 @@ function renderPath(model) {
   model.path.forEach((step, index) => {
     const item = document.createElement("li");
     item.className = index < 2 ? "complete" : index === 2 ? "active" : "";
+    markSearchable(item, step);
     item.innerHTML = `<span>${index + 1}</span><strong></strong>`;
     item.querySelector("strong").textContent = step;
     list.appendChild(item);
@@ -318,6 +359,7 @@ function renderStepRows(model) {
   clearNode(rows);
   model.steps.forEach(([step, result, detail]) => {
     const row = document.createElement("tr");
+    markSearchable(row, `${step} ${result} ${detail}`);
     row.innerHTML = `<td></td><td><span class="result ${resultClass(result)}"></span></td><td></td>`;
     row.children[0].textContent = step;
     row.querySelector(".result").textContent = result;
@@ -331,6 +373,7 @@ function renderRootCauses(model) {
   clearNode(rows);
   model.rootCauses.forEach(([cause, probability, why], index) => {
     const row = document.createElement("tr");
+    markSearchable(row, `${cause} ${probability} ${why}`);
     row.innerHTML = `<td>${index + 1}</td><td></td><td><div class="probability"><i></i><span>${probability}%</span></div></td><td></td>`;
     row.children[1].textContent = cause;
     row.querySelector("i").style.width = `${probability}%`;
@@ -345,8 +388,33 @@ function renderPlainList(id, items) {
   items.forEach((text) => {
     const li = document.createElement("li");
     li.textContent = text;
+    markSearchable(li, text);
     list.appendChild(li);
   });
+}
+
+function buildTalkTrackLines(model, persona) {
+  if (activeDemoMode === "5") {
+    return [
+      `Problem - ${persona.label}s need a faster way to turn messy diagnostic intake into a trusted next step.`,
+      `Workflow - this static demo converts ${model.dtcs} and technician observations into safety gates, validation steps, root-cause ranking, and stakeholder language.`,
+      `Buyer value - ${persona.emphasis}; modeled value is $${monthlyImpact(model).toLocaleString()}/mo from simulated assumptions.`
+    ];
+  }
+
+  if (activeDemoMode === "30") {
+    return [
+      `Discovery - ask where diagnostic context gets lost today, who owns the next decision, and what one day of downtime costs.`,
+      `Current-state pain - ${model.vehicle} starts with symptoms, DTCs, observations, safety constraints, and incomplete buyer context.`,
+      `Workflow walkthrough - show ${model.path.join(" > ")} and explain why each gate reduces guessing.`,
+      `Technical validation - review the validation table, signal snapshot, and top root cause: ${model.rootCauses[0][0]}.`,
+      `Persona handoff - switch buyer persona to show how the same evidence becomes fleet, service, support, or executive language.`,
+      `ROI model - tie ${model.roi.casesPerMonth} monthly cases, ${model.roi.hoursSaved} saved hours, and parts-risk control to business value.`,
+      `Pilot plan - define success as fewer clarification loops, cleaner handoffs, faster triage, and better first-decision quality.`
+    ];
+  }
+
+  return persona.script;
 }
 
 function monthlyImpact(model) {
@@ -355,6 +423,7 @@ function monthlyImpact(model) {
 
 function renderImpact(model) {
   const persona = personas[$("buyerPersona").value] || personas.fleet;
+  const mode = demoModes[activeDemoMode] || demoModes["15"];
   const stack = $("impactCards");
   clearNode(stack);
   [
@@ -382,8 +451,21 @@ function renderImpact(model) {
 
   const script = $("demoScript");
   clearNode(script);
-  persona.script.forEach((line, index) => {
+  setText("demoModeLabel", `${mode.label} - ${mode.framing}`);
+  const lines = buildTalkTrackLines(model, persona);
+  currentTalkTrack = [
+    `Sales Engineer Talk Track - ${mode.label}`,
+    `Persona: ${persona.label}`,
+    `Case: ${model.vehicle}`,
+    "",
+    ...lines.map((line, index) => `${index + 1}. ${line}`),
+    "",
+    "Boundary: static simulated workflow demo, not a production diagnostic recommendation."
+  ].join("\n");
+  $("talkTrackText").value = currentTalkTrack;
+  lines.forEach((line, index) => {
     const li = document.createElement("li");
+    markSearchable(li, line);
     li.innerHTML = `<span>${index + 1}</span><p></p>`;
     li.querySelector("p").textContent = line;
     script.appendChild(li);
@@ -419,24 +501,96 @@ function buildBrief(model) {
   ].join("\n");
 }
 
-async function copyBrief() {
-  currentBrief = buildBrief(activeModel || buildActiveModel());
+function applySearch() {
+  const input = $("searchInput");
+  const query = input.value.trim().toLowerCase();
+  const nodes = Array.from(document.querySelectorAll(".searchable"));
+  const dtcMatch = query && $("dtcs").value.toLowerCase().includes(query);
+  let matches = 0;
+
+  document.body.classList.toggle("is-searching", Boolean(query));
+  $("dtcs").classList.toggle("search-match", Boolean(dtcMatch));
+
+  nodes.forEach((node) => {
+    const hit = Boolean(query && node.dataset.search && node.dataset.search.includes(query));
+    node.classList.toggle("search-match", hit);
+    if (hit) matches += 1;
+  });
+
+  if (!query) {
+    setText("searchStatus", "Search highlights workflow evidence.");
+    return;
+  }
+
+  setText("searchStatus", `${matches + (dtcMatch ? 1 : 0)} match${matches + (dtcMatch ? 1 : 0) === 1 ? "" : "es"} for "${query}" across DTCs, systems, root causes, and workflow steps.`);
+}
+
+async function copyFromTextArea(text, targetId, statusId) {
   try {
     if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(currentBrief);
+      await navigator.clipboard.writeText(text);
     } else {
-      $("briefText").value = currentBrief;
-      $("briefText").focus();
-      $("briefText").select();
+      $(targetId).value = text;
+      $(targetId).focus();
+      $(targetId).select();
       document.execCommand("copy");
     }
-    setText("briefStatus", "Copied");
+    setText(statusId, "Copied");
   } catch {
-    $("briefText").value = currentBrief;
-    $("briefText").focus();
-    $("briefText").select();
-    setText("briefStatus", "Selected - press Ctrl+C");
+    $(targetId).value = text;
+    $(targetId).focus();
+    $(targetId).select();
+    setText(statusId, "Selected - press Ctrl+C");
   }
+}
+
+async function copyBrief() {
+  currentBrief = buildBrief(activeModel || buildActiveModel());
+  await copyFromTextArea(currentBrief, "briefText", "briefStatus");
+}
+
+async function copyTalkTrack() {
+  if (!currentTalkTrack) renderDashboard();
+  await copyFromTextArea(currentTalkTrack, "talkTrackText", "talkTrackStatus");
+}
+
+function workflowSection(title, items) {
+  return `
+    <section>
+      <h3>${escapeHtml(title)}</h3>
+      <ul>${items.map((item) => `<li>${escapeHtml(Array.isArray(item) ? item.join(" - ") : item)}</li>`).join("")}</ul>
+    </section>
+  `;
+}
+
+function renderWorkflowModal(model) {
+  setText("workflowModalTitle", `${model.vehicle} - ${model.system}`);
+  $("workflowModalBody").innerHTML = [
+    workflowSection("Recommended Path", model.path),
+    workflowSection("Validation Steps", model.steps.map(([step, result, detail]) => `${step}: ${result} - ${detail}`)),
+    workflowSection("Likely Root Causes", model.rootCauses.map(([cause, probability, why]) => `${probability}% - ${cause}: ${why}`)),
+    workflowSection("Next Test Steps", model.nextTests),
+    workflowSection("Required Tools", model.tools),
+    workflowSection("Buyer Proof", [
+      `Modeled value: $${monthlyImpact(model).toLocaleString()}/mo`,
+      `Labor estimate: ${model.labor}`,
+      `Parts assumption: ${model.parts}`,
+      `Demo boundary: simulated data only`
+    ])
+  ].join("");
+}
+
+function openWorkflowModal() {
+  renderWorkflowModal(activeModel || buildActiveModel());
+  $("workflowModal").classList.add("open");
+  $("workflowModal").setAttribute("aria-hidden", "false");
+  $("closeWorkflowModal").focus();
+}
+
+function closeWorkflowModal() {
+  $("workflowModal").classList.remove("open");
+  $("workflowModal").setAttribute("aria-hidden", "true");
+  $("fullWorkflowButton").focus();
 }
 
 function renderDashboard() {
@@ -454,6 +608,7 @@ function renderDashboard() {
   renderExplanation(activeModel);
   currentBrief = buildBrief(activeModel);
   $("briefText").value = currentBrief;
+  applySearch();
 }
 
 function loadCase(key) {
@@ -495,6 +650,28 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   $("briefButton").addEventListener("click", copyBrief);
+  $("copyTalkTrack").addEventListener("click", copyTalkTrack);
+  $("fullWorkflowButton").addEventListener("click", openWorkflowModal);
+  $("closeWorkflowModal").addEventListener("click", closeWorkflowModal);
+  document.querySelector("[data-close-modal]").addEventListener("click", closeWorkflowModal);
+  $("searchInput").addEventListener("input", applySearch);
   document.querySelectorAll(".tab").forEach((tab) => tab.addEventListener("click", () => activateTab(tab.dataset.tab)));
+  document.querySelectorAll("[data-demo-mode]").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeDemoMode = button.dataset.demoMode;
+      document.querySelectorAll("[data-demo-mode]").forEach((item) => item.classList.toggle("active", item === button));
+      setText("talkTrackStatus", "");
+      renderDashboard();
+    });
+  });
+  document.addEventListener("keydown", (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      $("searchInput").focus();
+    }
+    if (event.key === "Escape" && $("workflowModal").classList.contains("open")) {
+      closeWorkflowModal();
+    }
+  });
   ["complaint", "observations"].forEach((id) => $(id).addEventListener("input", updateCounts));
 });

@@ -204,7 +204,8 @@ figcaption {
 }
 
 .demo-grid,
-.materials-grid {
+.materials-grid,
+.build-grid {
   max-width: 1180px;
   margin: 0 auto;
   display: grid;
@@ -223,6 +224,19 @@ article,
 
 article {
   padding: 22px;
+}
+
+.build-section {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 28px;
+}
+
+.build-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
 }
 
 ul {
@@ -320,7 +334,8 @@ li + li {
   }
 
   .demo-grid,
-  .materials-grid {
+  .materials-grid,
+  .build-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -332,6 +347,7 @@ li + li {
 
   .hero,
   .split-section,
+  .build-section,
   .contact-section {
     padding-left: 20px;
     padding-right: 20px;

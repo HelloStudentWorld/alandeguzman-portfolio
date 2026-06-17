@@ -251,6 +251,29 @@ a:focus-visible {
   font-size: 12px;
 }
 
+.search-status {
+  margin-top: 8px !important;
+  color: #007a75 !important;
+  font-weight: 750;
+}
+
+.is-searching .searchable {
+  opacity: 0.34;
+  transition: opacity 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.is-searching .searchable.search-match,
+input.search-match {
+  opacity: 1;
+  border-radius: 6px;
+  box-shadow: 0 0 0 3px rgba(0, 140, 134, 0.18);
+  background-color: #f0fffc;
+}
+
+tr.search-match {
+  box-shadow: inset 3px 0 0 var(--teal);
+}
+
 .summary-metric {
   display: grid;
   align-content: center;
@@ -735,6 +758,11 @@ li + li {
 
 .outline-button {
   width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
   margin-top: 14px;
   border-color: #5fbab4;
   color: #007a75;
@@ -848,6 +876,30 @@ li + li {
   font-size: 12px;
 }
 
+.demo-mode {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 14px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #f4f8f8;
+}
+
+.demo-mode button {
+  min-height: 32px;
+  border: 0;
+  background: transparent;
+  color: #51636b;
+  font-size: 12px;
+}
+
+.demo-mode button.active {
+  color: #ffffff;
+  background: var(--teal);
+}
+
 #demoScript {
   margin-top: 14px;
   padding: 0;
@@ -879,6 +931,102 @@ li + li {
 
 .deck-button {
   margin-top: 18px;
+}
+
+.copy-status {
+  display: block;
+  min-height: 18px;
+  margin-top: 8px;
+  color: #007a75;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.modal-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: none;
+  padding: 24px;
+}
+
+.modal-shell.open {
+  display: grid;
+  place-items: center;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 10, 14, 0.72);
+}
+
+.workflow-modal {
+  position: relative;
+  z-index: 1;
+  width: min(1080px, 100%);
+  max-height: min(820px, calc(100vh - 48px));
+  overflow: auto;
+  border: 1px solid #27404a;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.34);
+}
+
+.workflow-modal header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 18px;
+  color: #eef8fb;
+  background: #0b1218;
+  border-bottom: 1px solid #1d2a32;
+}
+
+.workflow-modal header p,
+.workflow-modal header h2 {
+  margin: 0;
+}
+
+.workflow-modal header p {
+  color: #78d9d1;
+  font-size: 12px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.workflow-modal header h2 {
+  margin-top: 4px;
+  font-size: 20px;
+}
+
+.workflow-modal header button {
+  border-color: #33434d;
+  background: #111921;
+  color: #ffffff;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+
+.modal-grid section {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fbfdfd;
+}
+
+.modal-grid h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
 }
 
 .status-bar {
@@ -965,7 +1113,8 @@ li + li {
   .dashboard-grid,
   .right-rail,
   .next-steps-card,
-  .obd-columns {
+  .obd-columns,
+  .modal-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1028,6 +1177,10 @@ li + li {
   .status-bar {
     position: static;
     flex-wrap: wrap;
+  }
+
+  .modal-shell {
+    padding: 10px;
   }
 
   .push-right {
