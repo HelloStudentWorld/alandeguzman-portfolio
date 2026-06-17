@@ -79,6 +79,8 @@ const defaultOutputs = {
 };
 
 let currentExecutiveBrief = "";
+let activePersona = "fleet";
+let pendingAssumptionReset = true;
 
 function $(id) {
   return document.getElementById(id);
@@ -241,6 +243,209 @@ function renderList(id, items) {
   });
 }
 
+function formatCurrency(value) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0
+  }).format(value);
+}
+
+function setText(id, value) {
+  const node = $(id);
+  if (node) {
+    node.textContent = value;
+  }
+}
+
+function setMeter(id, percent) {
+  const node = $(id);
+  if (node) {
+    node.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+  }
+}
+
+function renderPlainList(id, items) {
+  const node = $(id);
+  node.innerHTML = "";
+  items.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    node.appendChild(li);
+  });
+}
+
+function buildCommandModel(input, output) {
+  const text = normalize(`${input.vehicle} ${input.complaint} ${input.dtcs} ${input.observations} ${input.conditions}`);
+  const isEv = text.includes("high-voltage") || text.includes("p0a") || text.includes("charging") || text.includes("insulation");
+  const isEmissions = text.includes("p0420") || text.includes("p0138") || text.includes("smog") || text.includes("emissions") || text.includes("catalyst");
+
+  const model = {
+    timeSaved: 1.2,
+    stakeholders: "4",
+    stakeholderNote: "Fleet, tech, advisor, support",
+    riskFlags: "1",
+    riskNote: "Diagnostic ambiguity",
+    primaryRisk: ["Primary risk", "Incomplete diagnostic context", 62, "Workflow needs cleaner intake before parts recommendation."],
+    confidence: ["Root-cause confidence", "Needs more evidence", 48, "Freeze-frame and live data decide the next step."],
+    proofMetric: ["Buyer proof metric", "Repeat clarifications", 58, "Track notes returned for missing context."],
+    handoff: ["Handoff package", "Tech + advisor", 64, "Customer explanation stays tied to validated evidence."],
+    timelineStatus: "Evidence capture",
+    timeline: [
+      ["Intake", "Normalize complaint, DTCs, conditions, and prior repair context."],
+      ["Evidence", "Capture freeze-frame, code status, and current observations before clearing anything."],
+      ["Test plan", "Select the next controlled test instead of recommending parts from a code description."],
+      ["Handoff", "Translate what is known, unknown, and assumed for the advisor and buyer."]
+    ],
+    baselineProof: "Unstructured notes, repeated clarification, unclear risk ownership",
+    workflowProof: "Validated next test, safety boundary, buyer-ready summary",
+    measuredProof: "Time to triage, repeat contacts, escalations with complete evidence",
+    defaultAssumptions: { vehicles: 8, cost: 140, hours: 1.2 },
+    personas: {
+      fleet: {
+        title: "Fleet buyer view",
+        badge: "Downtime",
+        narrative: "The fleet story is not the code. It is whether the vehicle should stay in service, be routed for inspection, or be removed before a repeat event creates downtime.",
+        bullets: ["Prioritize assets by safety and downtime risk.", "Show why a warning needs controlled testing.", "Turn technician notes into operations decisions."]
+      },
+      service: {
+        title: "Service operations view",
+        badge: "Throughput",
+        narrative: "The service manager sees a cleaner intake path: fewer back-and-forth questions, better handoff quality, and less guessing from incomplete notes.",
+        bullets: ["Standardize complex diagnostic intake.", "Reduce repeated clarification between advisor and technician.", "Make assumptions visible before authorization."]
+      },
+      support: {
+        title: "Support team view",
+        badge: "Escalation",
+        narrative: "The support workflow captures enough evidence for a remote team to decide whether to escalate, request more data, or route the case to a qualified technician.",
+        bullets: ["Separate active risk from historical codes.", "Escalate with evidence instead of screenshots alone.", "Preserve safety boundaries in the support handoff."]
+      },
+      exec: {
+        title: "Executive buyer view",
+        badge: "ROI",
+        narrative: "The executive story is proof: reduced diagnostic loops, cleaner escalation packages, and measurable operating time returned to the business.",
+        bullets: ["Tie workflow quality to time saved.", "Measure repeat escalations and avoidable downtime.", "Show a credible pilot metric before expansion."]
+      }
+    }
+  };
+
+  if (isEv) {
+    Object.assign(model, {
+      timeSaved: 1.7,
+      riskFlags: "2",
+      riskNote: "High-voltage and interlock",
+      primaryRisk: ["Primary risk", "High-voltage isolation", 88, "Safety workflow before drivability workflow."],
+      confidence: ["Root-cause confidence", "Connector / insulation pattern", 72, "Needs freeze-frame, insulation values, and controlled retest."],
+      proofMetric: ["Buyer proof metric", "Repeat escalations", 64, "Track fewer clarification loops per high-risk case."],
+      handoff: ["Handoff package", "Tech + advisor + fleet", 80, "Same evidence translated by audience."],
+      timelineStatus: "Safety gate active",
+      timeline: [
+        ["Intake", "Capture complaint, charging context, DTCs, and whether the warning is current or intermittent."],
+        ["Safety gate", "Apply OEM high-voltage disable, PPE, verification, and lockout requirements before inspection."],
+        ["Evidence", "Document insulation readings, interlock status, freeze-frame, 12V state, and charging conditions."],
+        ["Decision", "Separate connector, moisture, charging, and module-control patterns before recommending parts."],
+        ["Handoff", "Provide technician action, advisor-safe explanation, fleet downtime risk, and support escalation notes."]
+      ],
+      defaultAssumptions: { vehicles: 10, cost: 175, hours: 1.7 }
+    });
+  }
+
+  if (isEmissions) {
+    Object.assign(model, {
+      timeSaved: 1.1,
+      riskFlags: "2",
+      riskNote: "Readiness and emissions",
+      primaryRisk: ["Primary risk", "Smog readiness gap", 66, "Repair decision and monitor readiness are separate workflows."],
+      confidence: ["Root-cause confidence", "Sensor / catalyst validation", 70, "Needs fuel trims, sensor graphing, exhaust inspection, and drive-cycle status."],
+      proofMetric: ["Buyer proof metric", "Avoided wrong-part quote", 74, "Track fewer premature catalyst recommendations."],
+      handoff: ["Handoff package", "Advisor + emissions plan", 76, "Explains repair evidence and smog timing without overpromising."],
+      timelineStatus: "Readiness plan active",
+      timeline: [
+        ["Intake", "Capture codes, recent battery disconnect, smog deadline, and drivability status."],
+        ["Evidence", "Check freeze-frame, fuel trims, sensor response, exhaust condition, and monitor readiness."],
+        ["Validation", "Separate active fault diagnosis from catalyst monitor completion requirements."],
+        ["Decision", "Recommend testing or repair only after sensor, fuel-control, and exhaust evidence supports it."],
+        ["Handoff", "Give the customer a repair path plus drive-cycle/readiness expectations."]
+      ],
+      defaultAssumptions: { vehicles: 6, cost: 125, hours: 1.1 }
+    });
+  }
+
+  return model;
+}
+
+function renderTimeline(items) {
+  const node = $("diagnosticTimeline");
+  node.innerHTML = "";
+  items.forEach(([title, detail], index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span>${index + 1}</span><div><strong>${title}</strong><p>${detail}</p></div>`;
+    node.appendChild(li);
+  });
+}
+
+function calculateMonthlyImpact(model) {
+  const vehicles = Number($("affectedVehicles").value || model.defaultAssumptions.vehicles);
+  const cost = Number($("downtimeCost").value || model.defaultAssumptions.cost);
+  const hours = Number($("hoursSaved").value || model.defaultAssumptions.hours);
+  return Math.round(vehicles * cost * hours * 4.2);
+}
+
+function renderCommandCenter(input, output) {
+  const model = buildCommandModel(input, output);
+  if (pendingAssumptionReset) {
+    $("affectedVehicles").value = model.defaultAssumptions.vehicles;
+    $("downtimeCost").value = model.defaultAssumptions.cost;
+    $("hoursSaved").value = model.defaultAssumptions.hours;
+    pendingAssumptionReset = false;
+  }
+  const impact = calculateMonthlyImpact(model);
+  const persona = model.personas[activePersona] || model.personas.fleet;
+
+  setText("topTimeSaved", `${model.timeSaved.toFixed(1)} hrs`);
+  setText("topTimeNote", "Modeled per complex case");
+  setText("topStakeholders", model.stakeholders);
+  setText("topStakeholderNote", model.stakeholderNote);
+  setText("topRiskFlags", model.riskFlags);
+  setText("topRiskNote", model.riskNote);
+  setText("topDemoValue", `$${(impact / 1000).toFixed(1).replace(".0", "")}k/mo`);
+  setText("topDemoNote", "Recalculated from assumptions");
+
+  setText("primaryRiskLabel", model.primaryRisk[0]);
+  setText("primaryRiskValue", model.primaryRisk[1]);
+  setMeter("primaryRiskMeter", model.primaryRisk[2]);
+  setText("primaryRiskNote", model.primaryRisk[3]);
+
+  setText("confidenceLabel", model.confidence[0]);
+  setText("confidenceValue", model.confidence[1]);
+  setMeter("confidenceMeter", model.confidence[2]);
+  setText("confidenceNote", model.confidence[3]);
+
+  setText("proofMetricLabel", model.proofMetric[0]);
+  setText("proofMetricValue", model.proofMetric[1]);
+  setMeter("proofMetricMeter", model.proofMetric[2]);
+  setText("proofMetricNote", model.proofMetric[3]);
+
+  setText("handoffLabel", model.handoff[0]);
+  setText("handoffValue", model.handoff[1]);
+  setMeter("handoffMeter", model.handoff[2]);
+  setText("handoffNote", model.handoff[3]);
+
+  setText("timelineStatus", model.timelineStatus);
+  renderTimeline(model.timeline);
+
+  setText("personaTitle", persona.title);
+  setText("personaBadge", persona.badge);
+  setText("personaNarrative", persona.narrative);
+  renderPlainList("personaBullets", persona.bullets);
+
+  setText("baselineProof", model.baselineProof);
+  setText("workflowProof", model.workflowProof);
+  setText("measuredProof", model.measuredProof);
+  setText("modeledImpact", formatCurrency(impact));
+  setText("modeledImpactNote", `${$("affectedVehicles").value} vehicles x ${$("hoursSaved").value} hrs saved x ${formatCurrency(Number($("downtimeCost").value))}/hr x 4.2 cases/mo.`);
+}
+
 function buildExecutiveBrief(input, output) {
   const vehicle = input.vehicle || "the selected vehicle";
   const dtcs = input.dtcs || "no DTCs entered";
@@ -308,6 +513,7 @@ function renderWorkflow() {
   renderList("systemsToCheck", output.systemsToCheck);
   renderList("triageQuestions", output.triageQuestions);
   renderList("doNotAssume", output.doNotAssume);
+  renderCommandCenter(input, output);
   renderExecutiveBrief(input, output);
 }
 
@@ -331,18 +537,39 @@ $("diagnosticForm").addEventListener("submit", (event) => {
 });
 
 $("loadMiniCase").addEventListener("click", () => {
+  pendingAssumptionReset = true;
   writeForm(sampleCases.mini);
   renderWorkflow();
 });
 
 $("loadHondaCase").addEventListener("click", () => {
+  pendingAssumptionReset = true;
   writeForm(sampleCases.honda);
   renderWorkflow();
 });
 
 $("resetForm").addEventListener("click", () => {
+  pendingAssumptionReset = true;
   writeForm(sampleCases.blank);
   renderWorkflow();
+});
+
+document.querySelectorAll(".persona").forEach((button) => {
+  button.addEventListener("click", () => {
+    activePersona = button.dataset.persona;
+    document.querySelectorAll(".persona").forEach((item) => {
+      item.classList.toggle("active", item === button);
+    });
+    const input = readForm();
+    renderCommandCenter(input, buildWorkflow(input));
+  });
+});
+
+["affectedVehicles", "downtimeCost", "hoursSaved"].forEach((id) => {
+  $(id).addEventListener("input", () => {
+    const input = readForm();
+    renderCommandCenter(input, buildWorkflow(input));
+  });
 });
 
 $("copyBrief").addEventListener("click", async () => {

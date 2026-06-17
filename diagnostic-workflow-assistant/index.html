@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Diagnostic Workflow Assistant</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230f766e'/%3E%3Cpath d='M18 33h28M32 19v28' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css?v=command-center-20260617b">
+    <link rel="stylesheet" href="styles.css?v=interactive-demo-20260617">
   </head>
   <body>
     <header class="topbar">
@@ -24,23 +24,23 @@
     <section class="insight-strip" aria-label="Demo impact summary">
       <article>
         <span>Diagnostic time saved</span>
-        <strong>1.7 hrs</strong>
-        <small>Estimated vs. standard intake</small>
+        <strong id="topTimeSaved">1.7 hrs</strong>
+        <small id="topTimeNote">Estimated vs. standard intake</small>
       </article>
       <article>
         <span>Stakeholders aligned</span>
-        <strong>4</strong>
-        <small>Fleet, tech, advisor, support</small>
+        <strong id="topStakeholders">4</strong>
+        <small id="topStakeholderNote">Fleet, tech, advisor, support</small>
       </article>
       <article>
         <span>Risk flags</span>
-        <strong>2</strong>
-        <small>High-voltage and interlock</small>
+        <strong id="topRiskFlags">2</strong>
+        <small id="topRiskNote">High-voltage and interlock</small>
       </article>
       <article>
         <span>Demo value</span>
-        <strong>$12.4k/mo</strong>
-        <small>Modeled fleet impact</small>
+        <strong id="topDemoValue">$12.4k/mo</strong>
+        <small id="topDemoNote">Modeled fleet impact</small>
       </article>
     </section>
 
@@ -51,54 +51,89 @@
           <h2>Diagnostic operations command center</h2>
           <p>Shows how a messy shop-floor concern becomes risk triage, buyer language, implementation handoff, and measurable proof-of-value.</p>
         </div>
-        <div class="live-badge"><span></span> Live case model</div>
+        <div class="command-actions">
+          <div class="live-badge"><span></span> Live case model</div>
+          <div class="persona-switcher" aria-label="Buyer persona">
+            <button class="persona active" type="button" data-persona="fleet">Fleet</button>
+            <button class="persona" type="button" data-persona="service">Service Ops</button>
+            <button class="persona" type="button" data-persona="support">Support</button>
+            <button class="persona" type="button" data-persona="exec">Exec</button>
+          </div>
+        </div>
       </div>
 
       <div class="command-grid">
         <article class="signal-tile">
-          <span>Primary risk</span>
-          <strong>High-voltage isolation</strong>
-          <div class="signal-meter"><i style="width: 88%"></i></div>
-          <small>Safety workflow before drivability workflow</small>
+          <span id="primaryRiskLabel">Primary risk</span>
+          <strong id="primaryRiskValue">High-voltage isolation</strong>
+          <div class="signal-meter"><i id="primaryRiskMeter" style="width: 88%"></i></div>
+          <small id="primaryRiskNote">Safety workflow before drivability workflow</small>
         </article>
         <article class="signal-tile">
-          <span>Root-cause confidence</span>
-          <strong>Connector / insulation pattern</strong>
-          <div class="signal-meter amber"><i style="width: 72%"></i></div>
-          <small>Needs freeze-frame and controlled retest</small>
+          <span id="confidenceLabel">Root-cause confidence</span>
+          <strong id="confidenceValue">Connector / insulation pattern</strong>
+          <div class="signal-meter amber"><i id="confidenceMeter" style="width: 72%"></i></div>
+          <small id="confidenceNote">Needs freeze-frame and controlled retest</small>
         </article>
         <article class="signal-tile">
-          <span>Buyer proof metric</span>
-          <strong>Repeat escalations</strong>
-          <div class="signal-meter green"><i style="width: 64%"></i></div>
-          <small>Track fewer clarification loops per case</small>
+          <span id="proofMetricLabel">Buyer proof metric</span>
+          <strong id="proofMetricValue">Repeat escalations</strong>
+          <div class="signal-meter green"><i id="proofMetricMeter" style="width: 64%"></i></div>
+          <small id="proofMetricNote">Track fewer clarification loops per case</small>
         </article>
         <article class="signal-tile">
-          <span>Handoff package</span>
-          <strong>Tech + advisor + fleet</strong>
-          <div class="signal-meter"><i style="width: 80%"></i></div>
-          <small>Same evidence translated by audience</small>
+          <span id="handoffLabel">Handoff package</span>
+          <strong id="handoffValue">Tech + advisor + fleet</strong>
+          <div class="signal-meter"><i id="handoffMeter" style="width: 80%"></i></div>
+          <small id="handoffNote">Same evidence translated by audience</small>
         </article>
       </div>
 
       <div class="demo-intelligence">
-        <article class="workflow-map">
-          <h3>Decision Flow</h3>
-          <div class="flow-rail">
-            <span>Intake</span>
-            <span>Safety gate</span>
-            <span>Diagnostic path</span>
-            <span>Advisor language</span>
-            <span>PoV metric</span>
+        <article class="timeline-card">
+          <div class="card-heading">
+            <h3>Live Diagnostic Timeline</h3>
+            <span id="timelineStatus">Safety gate active</span>
           </div>
+          <ol id="diagnosticTimeline" class="diagnostic-timeline"></ol>
         </article>
+        <article class="buyer-panel">
+          <div class="card-heading">
+            <h3 id="personaTitle">Fleet buyer view</h3>
+            <span id="personaBadge">Downtime</span>
+          </div>
+          <p id="personaNarrative"></p>
+          <ul id="personaBullets"></ul>
+        </article>
+      </div>
+
+      <div class="demo-intelligence bottom-row">
         <article class="proof-ledger">
-          <h3>Proof-of-Value Ledger</h3>
+          <div class="card-heading">
+            <h3>Proof-of-Value Ledger</h3>
+            <span id="povStatus">Modeled</span>
+          </div>
           <dl>
-            <div><dt>Baseline</dt><dd>Unstructured notes, repeated clarification, unclear risk ownership</dd></div>
-            <div><dt>With workflow</dt><dd>Validated next test, safety boundary, buyer-ready summary</dd></div>
-            <div><dt>Measured outcome</dt><dd>Time to triage, repeat contacts, escalations with complete evidence</dd></div>
+            <div><dt>Baseline</dt><dd id="baselineProof">Unstructured notes, repeated clarification, unclear risk ownership</dd></div>
+            <div><dt>With workflow</dt><dd id="workflowProof">Validated next test, safety boundary, buyer-ready summary</dd></div>
+            <div><dt>Measured outcome</dt><dd id="measuredProof">Time to triage, repeat contacts, escalations with complete evidence</dd></div>
           </dl>
+        </article>
+        <article class="pov-card">
+          <div class="card-heading">
+            <h3>ROI Assumptions</h3>
+            <span>Live calculator</span>
+          </div>
+          <div class="pov-controls">
+            <label>Vehicles affected <input id="affectedVehicles" type="number" min="1" max="250" value="10"></label>
+            <label>Downtime $/hr <input id="downtimeCost" type="number" min="25" max="500" value="175"></label>
+            <label>Hours saved/case <input id="hoursSaved" type="number" min="0.25" max="8" step="0.25" value="1.7"></label>
+          </div>
+          <div class="pov-result">
+            <span>Modeled monthly impact</span>
+            <strong id="modeledImpact">$12,450</strong>
+            <small id="modeledImpactNote">Assumes recurring complex cases across a small fleet cohort.</small>
+          </div>
         </article>
       </div>
     </section>
@@ -333,6 +368,6 @@
       </aside>
     </main>
 
-    <script src="app.js?v=exec-brief-copy-20260617"></script>
+    <script src="app.js?v=interactive-demo-20260617"></script>
   </body>
 </html>
