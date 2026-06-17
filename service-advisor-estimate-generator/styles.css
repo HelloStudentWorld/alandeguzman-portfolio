@@ -320,6 +320,20 @@ button.secondary {
   font-size: 13px;
 }
 
+.brief-copy-box {
+  width: 100%;
+  min-height: 126px;
+  margin-top: 12px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  background: #f7faf8;
+  color: #25302c;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .advisor-shell {
   display: grid;
   grid-template-columns: minmax(340px, 430px) minmax(460px, 1fr) minmax(260px, 320px);

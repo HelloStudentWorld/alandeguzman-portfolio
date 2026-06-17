@@ -175,25 +175,20 @@ function renderExecutiveBrief(input, output) {
     `Live Demo Script: ${brief.demoScript}`,
     `Proof Plan: ${brief.proofPlan}`
   ].join("\n");
+  $("briefText").value = currentExecutiveBrief;
 }
 
 async function copyText(text) {
   if (navigator.clipboard && window.isSecureContext) {
     await navigator.clipboard.writeText(text);
-    return;
+    return true;
   }
-  const textarea = document.createElement("textarea");
+  const textarea = $("briefText");
   textarea.value = text;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "fixed";
-  textarea.style.opacity = "0";
-  document.body.appendChild(textarea);
+  textarea.focus();
   textarea.select();
   const copied = document.execCommand("copy");
-  document.body.removeChild(textarea);
-  if (!copied) {
-    throw new Error("Copy command failed.");
-  }
+  return copied;
 }
 
 function renderOutput() {
@@ -261,10 +256,12 @@ $("resetForm").addEventListener("click", () => {
 
 $("copyBrief").addEventListener("click", async () => {
   try {
-    await copyText(currentExecutiveBrief);
-    $("copyStatus").textContent = "Copied.";
+    const copied = await copyText(currentExecutiveBrief);
+    $("copyStatus").textContent = copied ? "Copied." : "Selected. Press Ctrl+C.";
   } catch {
-    $("copyStatus").textContent = "Copy unavailable in this browser.";
+    $("briefText").focus();
+    $("briefText").select();
+    $("copyStatus").textContent = "Selected. Press Ctrl+C.";
   }
 });
 
