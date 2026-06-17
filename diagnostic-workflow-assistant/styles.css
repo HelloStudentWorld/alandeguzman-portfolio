@@ -262,6 +262,10 @@ a:focus-visible {
   transition: opacity 120ms ease, box-shadow 120ms ease, background 120ms ease;
 }
 
+.search-filtered-out {
+  display: none !important;
+}
+
 .is-searching .searchable.search-match,
 input.search-match {
   opacity: 1;

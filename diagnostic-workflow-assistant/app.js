@@ -507,6 +507,7 @@ function applySearch() {
   const nodes = Array.from(document.querySelectorAll(".searchable"));
   const dtcMatch = query && $("dtcs").value.toLowerCase().includes(query);
   let matches = 0;
+  const filterableSelector = "article.searchable, li.searchable, tr.searchable";
 
   document.body.classList.toggle("is-searching", Boolean(query));
   $("dtcs").classList.toggle("search-match", Boolean(dtcMatch));
@@ -517,12 +518,20 @@ function applySearch() {
     if (hit) matches += 1;
   });
 
+  const totalMatches = matches + (dtcMatch ? 1 : 0);
+  nodes.forEach((node) => {
+    const filterable = node.matches(filterableSelector);
+    const shouldHide = Boolean(query && totalMatches > 0 && filterable && !node.classList.contains("search-match"));
+    node.classList.toggle("search-filtered-out", shouldHide);
+  });
+
   if (!query) {
+    nodes.forEach((node) => node.classList.remove("search-filtered-out"));
     setText("searchStatus", "Search highlights workflow evidence.");
     return;
   }
 
-  setText("searchStatus", `${matches + (dtcMatch ? 1 : 0)} match${matches + (dtcMatch ? 1 : 0) === 1 ? "" : "es"} for "${query}" across DTCs, systems, root causes, and workflow steps.`);
+  setText("searchStatus", `${totalMatches} match${totalMatches === 1 ? "" : "es"} for "${query}" across DTCs, systems, root causes, and workflow steps. Matching workflow blocks are filtered into view.`);
 }
 
 async function copyFromTextArea(text, targetId, statusId) {

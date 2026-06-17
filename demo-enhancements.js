@@ -85,13 +85,22 @@
     const query = input.value.trim().toLowerCase();
     const nodes = Array.from(document.querySelectorAll(".demo-searchable"));
     let matches = 0;
+    const filterableSelector = "article.demo-searchable, li.demo-searchable, tr.demo-searchable";
     document.body.classList.toggle("demo-searching", Boolean(query));
     nodes.forEach((node) => {
       const hit = Boolean(query && node.dataset.demoSearch && node.dataset.demoSearch.includes(query));
       node.classList.toggle("demo-search-match", hit);
       if (hit) matches += 1;
     });
-    status.textContent = query ? `${matches} match${matches === 1 ? "" : "es"} for "${query}"` : "Search highlights the generated workflow.";
+    nodes.forEach((node) => {
+      const filterable = node.matches(filterableSelector);
+      const shouldHide = Boolean(query && matches > 0 && filterable && !node.classList.contains("demo-search-match"));
+      node.classList.toggle("demo-search-filtered-out", shouldHide);
+    });
+    if (!query) nodes.forEach((node) => node.classList.remove("demo-search-filtered-out"));
+    status.textContent = query
+      ? `${matches} match${matches === 1 ? "" : "es"} for "${query}". Matching workflow blocks are filtered into view.`
+      : "Search highlights and filters the generated workflow.";
   }
 
   function sectionFrom(title, selector) {
@@ -152,7 +161,7 @@
       <button class="demo-action-button" type="button" data-open-workflow>View full workflow</button>
       <button class="demo-action-button" type="button" data-copy-talk>Copy SE talk track</button>
       <a class="demo-action-button" href="../deliverables/portfolio_demo_deck.pdf" target="_blank" rel="noopener">Download Demo Deck</a>
-      <span class="demo-search-status">Search highlights the generated workflow.</span>
+      <span class="demo-search-status">Search highlights and filters the generated workflow.</span>
       <span class="demo-copy-status" aria-live="polite"></span>
     `;
     topbar.insertAdjacentElement("afterend", bar);
