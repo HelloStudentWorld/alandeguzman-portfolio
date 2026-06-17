@@ -82,25 +82,30 @@ button {
   font-weight: 650;
 }
 
-.home-link {
+.topbar-actions .home-link {
   min-height: 38px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   border: 1px solid #2e4449;
   border-radius: 6px;
   padding: 8px 12px;
-  color: #ffffff;
-  background: #1d2a31;
-  text-decoration: none;
+  color: #d8fffa;
+  background: #14343a;
+  text-decoration: none !important;
   font-size: 14px;
   font-weight: 650;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
-.home-link:hover {
-  background: #263842;
+.topbar-actions .home-link:hover {
+  color: #ffffff;
+  background: #1b474f;
+  border-color: #3a6269;
 }
 
-.home-link:focus-visible {
+.topbar-actions .home-link:focus-visible {
   outline: 3px solid rgba(15, 118, 110, 0.35);
   outline-offset: 1px;
 }
