@@ -61,7 +61,7 @@
   function updateTalkTrack() {
     const lines = buildLines();
     lastTalkTrack = [
-      `Sales Engineer Talk Track - ${modeLabels[activeMode]}`,
+      `Customer-Facing Talk Track - ${modeLabels[activeMode]}`,
       `Demo: ${pageTitle()}`,
       "",
       ...lines.map((line, index) => `${index + 1}. ${line}`),
@@ -159,8 +159,7 @@
         <button type="button" data-mode="30">30 min</button>
       </div>
       <button class="demo-action-button" type="button" data-open-workflow>View full workflow</button>
-      <button class="demo-action-button" type="button" data-copy-talk>Copy SE talk track</button>
-      <a class="demo-action-button" href="../deliverables/portfolio_demo_deck.pdf" target="_blank" rel="noopener">Download Demo Deck</a>
+      <button class="demo-action-button" type="button" data-copy-talk>Copy customer-facing talk track</button>
       <span class="demo-search-status">Search highlights and filters the generated workflow.</span>
       <span class="demo-copy-status" aria-live="polite"></span>
     `;

@@ -186,7 +186,7 @@ const demoModes = {
   },
   15: {
     label: "15 min talk track",
-    framing: "standard Sales Engineer interview demo",
+    framing: "customer-facing workflow demo",
     steps: ["Problem", "Approach", "Live demo", "Business impact", "Next step"]
   },
   30: {
@@ -454,7 +454,7 @@ function renderImpact(model) {
   setText("demoModeLabel", `${mode.label} - ${mode.framing}`);
   const lines = buildTalkTrackLines(model, persona);
   currentTalkTrack = [
-    `Sales Engineer Talk Track - ${mode.label}`,
+    `Customer-Facing Talk Track - ${mode.label}`,
     `Persona: ${persona.label}`,
     `Case: ${model.vehicle}`,
     "",

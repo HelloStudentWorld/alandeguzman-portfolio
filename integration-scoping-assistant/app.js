@@ -229,7 +229,7 @@ function buildExecutiveBrief(input, output) {
   const source = input.sourceSystem || "source system";
   const target = input.targetSystem || "target system";
   return {
-    summary: `This demo turns a vague integration request between ${source} and ${target} into a Sales Engineer-ready discovery brief, technical assumptions, PoV metrics, risk register, and implementation handoff.`,
+    summary: `This demo turns a vague integration request between ${source} and ${target} into a customer-facing discovery brief, technical assumptions, PoV metrics, risk register, and implementation handoff.`,
     impact: "The buyer value is deal control: unclear API asks become scoped proof plans with owners, success metrics, security boundaries, and measurable operational outcomes.",
     demoScript: "I would demo this by starting with the buyer workflow, mapping source and target systems, surfacing assumptions, then closing with the proof-of-value metrics and handoff package.",
     proofPlan: `A proof of value would validate ${input.cadence.toLowerCase()}, required data objects, auth ownership, alert trust, and whether ${input.buyerType.toLowerCase()} users act on the synced workflow without manual re-checking.`
